@@ -7,7 +7,7 @@ Installation (VirtualBox, shared folders)
   wish to connect via SSH, make sure to install OpenSSH Server when prompted.
 
 - Take a snapshot with Machine > Take Snapshot. Now, if you ever want to
-  reinstall Smogon from scranch (or something goes wrong), you can revert back
+  reinstall Smogon from scratch (or something goes wrong), you can revert back
   to the clean install in an instant.
 
 - (Optional): If you have trouble connecting to the Internet from the VBox

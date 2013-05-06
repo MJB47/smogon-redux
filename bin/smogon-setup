@@ -44,6 +44,8 @@ esac
 #
 #
 
+useradd -d /var/lib/smogon -m smogon
+
 rm /etc/environment
 ln -s /smogon/conf/environment /etc/environment
 
@@ -64,18 +66,7 @@ rm /etc/nginx/sites-enabled/default
 wget https://raw.github.com/technomancy/leiningen/stable/bin/lein -O /usr/local/bin/lein
 chmod +x /usr/local/bin/lein
 
-export LEIN_HOME=/usr/local/lib/lein
-
-# Run lein once as root to install it to /usr/local/lib/lein
-#
-# WARNING make sure this path matches up with /etc/environment!  We repeat the
-# path here explicitly because the user will not have restarted yet.
-#
-# This combined with setting :local-repo in profiles.clj ensures that the user
-# we are logged in as doesn't matter.
-mkdir /usr/local/lib/lein
-ln -s /smogon/conf/lein-profiles.clj /usr/local/lib/lein/profiles.clj
-
-/smogon/bin/smogon-update-deps
+su smogon -c "mkdir /var/lib/smogon/.lein"
+ln -s /smogon/conf/lein-profiles.clj /var/lib/smogon/.lein/profiles.clj
 
 echo "Installation complete. Now, sudo reboot"

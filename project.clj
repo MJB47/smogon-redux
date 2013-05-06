@@ -13,7 +13,11 @@
                  [com.taoensso/timbre "1.5.2"] ;; Logger
                  [ring "1.1.8"]
                  [potemkin "0.2.2"]
-                 [clojure-complete "0.2.3"] ;; for nrepl.el
-                 ])
+                 ;; for nrepl.el
+                 [clojure-complete "0.2.3"]]
 
-
+  :repl-options {:history-file ~(str (user/leiningen-home) "/smogon/repl-history")}
+  
+  :compile-path ~(str (user/leiningen-home)  "/smogon/target/classes")
+  :native-path ~(str (user/leiningen-home)  "/smogon/target/native")
+  :target-path ~(str (user/leiningen-home) "/smogon/target"))
