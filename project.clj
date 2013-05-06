@@ -14,8 +14,6 @@
                  [ring "1.1.8"]
                  [potemkin "0.2.2"]
                  [clojure-complete "0.2.3"] ;; for nrepl.el
-                 ]
-  :plugins [[lein-exec "0.3.0"]]
-  :local-repo ".m2")
+                 ])
 
 
