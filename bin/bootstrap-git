@@ -1,7 +1,0 @@
-#!/bin/bash
-
-echo "*** Setting up git. (DON'T RUN bootstrap-virtualbox) ***"
-
-apt-get install -y git
-
-git clone git@github.com:monsanto/smogon-redux.git /smogon

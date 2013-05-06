@@ -1,41 +1,81 @@
 #!/bin/bash
 
-echo "*** Prepping apt/installing misc programs ***"
+if (( EUID != 0 )); then
+    echo "Must run as root." 1>&2
+    exit 1
+fi
 
-apt-get install -y build-essential nginx
+case $1 in
+    virtualbox|git)
+        ;;
+    *)
+        echo "Must call with 'virtualbox' or 'git'" ; exit 1
+        ;;
+esac
 
+# Let user know what is being executed
+set -x
 
-echo "*** Setting up Clojure. ***"
+apt-get install -y build-essential git openssh-server nginx ruby ruby-dev openjdk-7-jdk
 
-apt-get install -y openjdk-7-jdk
-wget https://raw.github.com/technomancy/leiningen/stable/bin/lein -O /usr/local/bin/lein
-chmod +x /usr/local/bin/lein
-
-# Run lein once as root to install it to /usr/local/lib/lein WARNING make sure
-# this path matches up with /etc/environment!  We repeat the path here
-# explicitly because the user will not have restarted yet.
-#
-# This combined with setting :local-repo ensures that the user we are logged in
-# as doesn't matter.
-mkdir /usr/local/lib/lein
-LEIN_ROOT=1 LEIN_HOME=/usr/local/lib/lein lein > /dev/null
-
-
-echo "*** Installing Ruby/Sass. ***"
-
-apt-get install -y ruby ruby-dev
+# Install sass
 gem install sass
 gem install --version '~> 0.8.8' rb-inotify
 
+#
+#
 
-echo "*** Setting up links. ***"
+case $1 in
+    virtualbox)
+        # Install guest utils
+        apt-get install -y virtualbox-ose-guest-dkms
+        # Setup directory
+        mkdir /smogon
+        echo "smogon /smogon vboxsf defaults 0 0" >> /etc/fstab
+        mount /smogon
+        # Make sure web server can access directory
+        adduser www-data vboxsf
+        ;;
+    git)
+        git clone https://github.com/monsanto/smogon-redux.git /smogon
+        ;;
+esac
+
+#
+#
 
 rm /etc/environment
 ln -s /smogon/conf/environment /etc/environment
-# Will complain if we ln here; whatever.
+
+# Will complain if we ln here; whatever. Also, there will be complaints without
+# the correct chmod.
 cp /smogon/conf/sudoers-no-secure-path /etc/sudoers.d/no-secure-path
 chmod 0440 /etc/sudoers.d/no-secure-path
+
+# Default site for nginx conflicts. Remove it.
 ln -s /smogon/conf/nginx.conf /etc/nginx/sites-enabled/smogon
-rm /etc/nginx/sites-enabled/default # conflicts...
+rm /etc/nginx/sites-enabled/default
+
 /smogon/bin/smogon-reload-upstart
 
+#
+#
+
+wget https://raw.github.com/technomancy/leiningen/stable/bin/lein -O /usr/local/bin/lein
+chmod +x /usr/local/bin/lein
+
+export LEIN_HOME=/usr/local/lib/lein
+
+# Run lein once as root to install it to /usr/local/lib/lein
+#
+# WARNING make sure this path matches up with /etc/environment!  We repeat the
+# path here explicitly because the user will not have restarted yet.
+#
+# This combined with setting :local-repo in profiles.clj ensures that the user
+# we are logged in as doesn't matter.
+mkdir /usr/local/lib/lein
+ln -s /smogon/conf/lein-profiles.clj /usr/local/lib/lein/profiles.clj
+
+/smogon/bin/smogon-update-deps
+
+echo "Installation complete. Now, sudo reboot"
