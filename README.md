@@ -1,10 +1,10 @@
-
 Installation (VirtualBox, shared folders)
 ==========================================
 
 - Install a fresh Ubuntu 12.10 server image
   (http://releases.ubuntu.com/quantal/ubuntu-12.10-server-amd64.iso). To make
-  things easier, use the same username as you use on your host machine.
+  things easier, use the same username as you use on your host machine. If you
+  wish to connect via SSH, make sure to install OpenSSH Server when prompted.
 
 - Take a snapshot with Machine > Take Snapshot. Now, if you ever want to
   reinstall Smogon from scratch (or something goes wrong), you can revert back
