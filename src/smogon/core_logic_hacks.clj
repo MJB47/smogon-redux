@@ -22,21 +22,24 @@
 
 (defmacro defquery
   [name & args]
-  (let [[name [args queryvars & body]] (m/name-with-attributes name args)] 
+  (let [[name [args queryvars & body]] (m/name-with-attributes name args)
+        [clauses [& {:keys [post] :or {post identity}}]] (split-with list? body)] 
     `(defn ~name ~args
-       (doall (l/run* ~queryvars ~@body)))))
+       (~post (doall (l/run* ~queryvars ~@clauses))))))
 
 (defmacro defpredicate
   [name & args]
-  (let [[name [args & body]] (m/name-with-attributes name args)] 
+  (let [[name [args & body]] (m/name-with-attributes name args)
+        [clauses [& {:keys [post] :or {post identity}}]] (split-with list? body)] 
     `(defn ~name ~args
        ;; Warning: this is not the same as not-empty because Clojure is stupid
        ;; as fuck and thinks returning the list is accetpable answer (hint: its
        ;; not, return true or false please)
-       (not (empty? (l/run 1 [q#] ~@body))))))
+       (not (empty? (~post (l/run 1 [q#] ~@body)))))))
 
 (defmacro defsingleton
   [name & args]
-  (let [[name [args queryvars & body]] (m/name-with-attributes name args)] 
+  (let [[name [args queryvars & body]] (m/name-with-attributes name args)
+        [clauses [& {:keys [post] :or {post identity}}]] (split-with list? body)] 
     `(defn ~name ~args
-       (first (l/run 1 ~queryvars ~@body)))))
+       (first (~post (l/run 1 ~queryvars ~@body))))))
