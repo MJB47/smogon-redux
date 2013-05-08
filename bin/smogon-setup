@@ -68,5 +68,7 @@ chmod +x /usr/local/bin/lein
 
 su smogon -c "mkdir /var/lib/smogon/.lein"
 ln -s /smogon/conf/lein-profiles.clj /var/lib/smogon/.lein/profiles.clj
+# Go ahead and preload this so we are ready to go at reboot
+su smogon -c "cd /smogon; lein deps"
 
 echo "Installation complete. Now, sudo reboot"
