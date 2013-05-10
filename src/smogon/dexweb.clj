@@ -29,22 +29,20 @@
   (str s))
 
 (defn render-diff
-  [f [base diffs]]
-  [:div (f base) (for [[v gens] diffs]
-                   [:div (interpose "," (map #(render-gen %) gens)) " " (f v)])])
+  [f diffs]
+  [:div (for [[v gens] diffs] [:div (interpose "," (map #(render-gen %) gens)) " " (f v)])])
 
 (defn render-pokemon-row [p]
-  (let [d (dex/summarize-pokemon p)] 
-    [:tr
-     [:td (dex/name-of p)]
-     [:td (render-diff render-types (:type d))]
-     [:td (render-diff render-abilities (:abilities d))]
-     [:td (render-diff render-stat (:hp d))] 
-     [:td (render-diff render-stat (:atk d))]
-     [:td (render-diff render-stat (:def d))]
-     [:td (render-diff render-stat (:spatk d))]
-     [:td (render-diff render-stat (:spdef d))]
-     [:td (render-diff render-stat (:speed d))]]))
+  [:tr
+   [:td (dex/name-of p)]
+   [:td (render-diff render-types (dex/type-of* p))]
+   [:td (render-diff render-ability (dex/abilities-of* p))]
+   [:td (render-diff render-stat (dex/hp-of* p))] 
+   [:td (render-diff render-stat (dex/atk-of* p))]
+   [:td (render-diff render-stat (dex/def-of* p))]
+   [:td (render-diff render-stat (dex/spatk-of* p))]
+   [:td (render-diff render-stat (dex/spdef-of* p))]
+   [:td (render-diff render-stat (dex/speed-of* p))]])
 
 (defn list-pokemon
   [pokemon]
