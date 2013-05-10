@@ -13,6 +13,7 @@
                  [com.taoensso/timbre "1.5.2"] ;; Logger
                  [ring "1.1.8"]
                  [potemkin "0.2.2"]
+                 [criterium "0.4.1"]
                  ;; for nrepl.el
                  [clojure-complete "0.2.3"]]
 

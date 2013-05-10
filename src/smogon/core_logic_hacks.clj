@@ -20,26 +20,17 @@
   [name & args]
   `(defonce ~name (rel ~@args)))
 
-(defmacro defquery
-  [name & args]
-  (let [[name [args queryvars & body]] (m/name-with-attributes name args)
-        [clauses [& {:keys [post] :or {post identity}}]] (split-with list? body)] 
-    `(defn ~name ~args
-       (~post (doall (l/run* ~queryvars ~@clauses))))))
+(defmacro run-set [args & body]
+  `(set (l/run* ~args ~@body)))
 
-(defmacro defpredicate
-  [name & args]
-  (let [[name [args & body]] (m/name-with-attributes name args)
-        [clauses [& {:keys [post] :or {post identity}}]] (split-with list? body)] 
-    `(defn ~name ~args
-       ;; Warning: this is not the same as not-empty because Clojure is stupid
-       ;; as fuck and thinks returning the list is accetpable answer (hint: its
-       ;; not, return true or false please)
-       (not (empty? (~post (l/run 1 [q#] ~@body)))))))
+(defmacro run-1 [args & body]
+  `(first (l/run 1 ~args ~@body)))
 
-(defmacro defsingleton
-  [name & args]
-  (let [[name [args queryvars & body]] (m/name-with-attributes name args)
-        [clauses [& {:keys [post] :or {post identity}}]] (split-with list? body)] 
-    `(defn ~name ~args
-       (first (~post (l/run 1 ~queryvars ~@body))))))
+;; Warning: this is not the same as not-empty because Clojure is stupid as fuck
+;; and thinks returning the list is accetpable answer (hint: its not, return
+;; true or false please)
+(defmacro run-bool [& body]
+  `(not (empty? (l/run 1 [unused#] ~@body))))
+
+(defmacro run-strict [args & body]
+  `(doall (l/run* ~args ~@body)))

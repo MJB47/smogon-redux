@@ -3,25 +3,27 @@
   (:require [clojure.core.logic :as l]
             [clojure.tools.macro :as m]
             [smogon.core-logic-hacks :as lhacks]
-            [clojure.java.io :as io]))
+            [clojure.java.io :as io]
+            [clojure.set :as set]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Utilities
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn ^:private load-dex-files
-  "Load every .clj script under src/pokedb. The intention is to initialize the
-  pokedex relations."
-  []
-  (doseq [f (file-seq (io/file (io/resource "pokedb/.")))]
-    (when (.isFile f)
-      (load-file (.getPath f)))))
+(defn ^:private vec-sort [x]
+  (vec (sort x)))
 
-(defn start-dex
-  "Don't call this function directly; prefer smogon.core/start-all with
-  :start-dex true"
-  []
-  (load-dex-files))
+(defn ^:private vec-union [x y]
+  (vec (sort (concat x y)))) 
+
+(defn ^:private group-vals-vec [coll]
+  (reduce (fn [m [k v]] (merge-with vec-union m {k #{v}})) {} coll))
+
+(defn ^:private group-vals [coll]
+  (reduce (fn [m [k v]] (merge-with set/union m {k #{v}})) {} coll))
+
+(defn ^:private group-keys [coll]
+  (reduce (fn [m [k v]]  (merge-with set/union m {v #{k}})) {} coll))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; All dex objects :)
@@ -29,8 +31,8 @@
 
 (lhacks/defrel name-r ^:index o x)
 
-(lhacks/defsingleton name-of [id] 
-  [q] (name-r id q))
+(defn name-of [x]
+  (lhacks/run-1 [q] (name-r x q)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Generations
@@ -61,54 +63,11 @@
   `(binding [*gen* ~gen]
     ~@body))
 
-(defn in-gens*
-  [gens f]
-  (into {} (for [gen gens
-                 :let [v (in-gen gen (f))]
-                 :when v]
-             [gen v])))
-
-(defmacro in-gens
-  "Evaluate body in the context of each generation, and collect the results in a
-  map keyed by generation."
-  [gens & body]
-  `(in-gens* ~gens (fn [] ~@body)))
-
-(defn group-gens
-  "(group-gens {:rb 3, :gs 4, :rs 5, :dp 3, :bw 4}) -> 
-   {3 #{:rb :dp}, 4 #{:gs :bw}, 5 #{:rs}}"
-  [genval]
-  (reduce-kv (fn [cur gen val]
-               (merge-with clojure.set/union {val #{gen}} cur))
-             {}
-             genval))
-
-(defn ungroup-gens
-  "(ungroup-gens {3 #{:rb :dp}, 4 #{:gs :bw}, 5 #{:rs}}) -> 
-   {:rb 3, :gs 4, :rs 5, :dp 3, :bw 4}"
-  [valgens]
-  (reduce-kv (fn [cur val gens]
-               (reduce #(assoc %1 %2 val) cur gens))
-             {}
-             valgens))
-
-(defn in-gens-relative*
-  [gens f]
-  (let [genvals (in-gens* gens f)
-        ;; Sort the results by generation
-        valgens (sort-by (fn [[val gs]]
-                           (reduce min (map (gens->ordering gens) gs)))
-                         (group-gens genvals))
-        [[v _] & rest] valgens]
-    [v rest]))
-
-(defmacro in-gens-relative
-  "Return a vector [base-val diffs] where diffs is a list of [val gens] pairs.
-
-  (in-gens-relative official-generations (abilities-of :clefable))
-  [(:cute-charm) ([(:magic-guard :cute-charm) #{:dp}] [(:unaware :cute-charm :magic-guard) #{:bw}])]"
-  [gens & body]
-  `(in-gens-relative* ~gens (fn [] ~@body)))
+(defn sort-grouped-gens
+  [gen-ordering valgens]
+  (sort-by (fn [[val gs]]
+             (reduce min (map (gens->ordering gen-ordering) gs)))
+           valgens))
 
 (defn ^:private fill-gens
   "(fill-gens [:gs :rs :dp :bw] {:gs [:ice :grass], :dp [:fire]}) 
@@ -139,80 +98,78 @@
 ;;
 
 (defmacro defgenrel [name & args]
-  (let [[name [& args]] (m/name-with-attributes name args)] 
-    `(let [rel# (lhacks/rel ^:index g# ~@args)] 
-       (when (defonce ~name (fn [~@args]
-                              (rel# *gen* ~@args)))
-         (alter-meta! #'~name #(assoc % ::genrel rel#))
-         #'~name))))
-
-(defmacro genfact
-  [gen rel & tuple]
-  `(l/fact (-> #'~rel meta ::genrel) ~gen ~@tuple))
+  `(lhacks/defrel ~name ^:index g# ~@args))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Types
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defgenrel type-r t)
-(defgenrel type-effective-against-r t1 t2 modifier)
+(defgenrel type-r ^:index t)
+(defgenrel type-effective-against-r ^:index t1 ^:index t2 modifier)
 
-(lhacks/defpredicate type? [tid] (type-r tid))
-(lhacks/defsingleton type-effectiveness [tid1 tid2]
-  [q] (type-effective-against-r tid1 tid2 q))
-(lhacks/defquery type-effectiveness-row [tid]
-  [q r] (type-effective-against-r tid q r))
+(defn type? [t]
+  (lhacks/run-bool (type-r *gen* t)))
+
+(defn type-effectiveness [t1 t2]
+  (lhacks/run-1 [q] (type-effective-against-r *gen* t1 t2 q)))
+
+(defn type-effectiveness-row [t]
+  (lhacks/run-strict [q r] (type-effective-against-r *gen*  t q r)))
 
 (defn deftypechart
   [id & {name :name
          gen :introduced-in
          geffectives :effective-against}]
   (doseq [g (gens-since gen)]
-    (genfact g type-r id))
+    (l/fact type-r g id))
   (doseq [[g mods] (make-generational gen geffectives)
           [type mod] mods]
-    (genfact g type-effective-against-r id type mod))
+    (l/fact type-effective-against-r g id type mod))
   (l/fact name-r id name))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Moves
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defgenrel move-r m)
+(defgenrel move-r ^:index m)
 
-(lhacks/defpredicate move? [id] (move-r id))
+(defn move? [m]
+  (lhacks/run-bool (move-r *gen* m)))
 
-(lhacks/defquery list-moves [] 
-  [q] (move-r q))
-  
+(defn list-moves [] 
+  (lhacks/run-strict [q] (move-r *gen* q)))
+
+(defn list-moves* [] 
+  (group-keys (lhacks/run-strict [g q] (move-r g q))))
+
 (defn defmove
   [id & {name :name,
          gen :introduced-in}]
   (doseq [g (gens-since gen)]
-    (genfact g move-r id))
+    (l/fact move-r g id))
   (l/fact name-r id name))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Abilities
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defgenrel ability-r ^:index a)
 
-(defgenrel ability-r a)
+(defn ability? [a]
+  (lhacks/run-bool (ability-r *gen* a)))
 
-(lhacks/defpredicate ability? [id] (ability-r id))
+(defn list-abilities [] 
+  (lhacks/run-strict [q] (ability-r *gen* q)))
 
-(lhacks/defquery list-abilities [] 
-  [q] (ability-r q))
+(defn list-abilities* [] 
+  (group-keys (lhacks/run-strict [g q] (ability-r g q))))
 
 (defn defability
   [id & {name :name,
          gen :introduced-in}]
   (doseq [g (gens-since gen)]
-    (genfact g ability-r id))
+    (l/fact ability-r g id))
   (l/fact name-r id name))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Items
@@ -220,15 +177,15 @@
 
 (defgenrel item-r i)
 
-(lhacks/defpredicate item? [id] (item-r id))
+(defn item? [i]
+  (lhacks/run-bool (item-r *gen* i)))
 
 (defn defitem
   [id & {name :name,
          gen :introduced-in}]
   (doseq [g (gens-since gen)]
-    (genfact g item-r id))
+    (l/fact item-r g id))
   (l/fact name-r id name))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Pokemon
@@ -236,7 +193,7 @@
 
 (def official-gens-without-abilities #{:rb :gs})
 
-(defgenrel pokemon-r x)
+(defgenrel pokemon-r ^:index x)
 (defgenrel pokemon-type-r ^:index p ^:index x)
 (defgenrel pokemon-ability-r ^:index p ^:index x)
 (defgenrel pokemon-egggroup-r ^:index p ^:index x)
@@ -249,51 +206,89 @@
 (defgenrel pokemon-weight-r ^:index p x)
 (defgenrel pokemon-height-r ^:index p x)
 
-;; Queries
+(defn pokemon? [p]
+  (lhacks/run-bool (pokemon-r *gen* p)))
 
-(lhacks/defpredicate pokemon? [id] (pokemon-r id))
+(defn list-pokemon []
+  (lhacks/run-strict [q] (pokemon-r *gen* q)))
 
-(lhacks/defquery list-pokemon [] 
-  [q] (pokemon-r q))
+(defn list-pokemon* []
+  (group-keys (l/run* [g q] (pokemon-r g q))))
 
-(lhacks/defquery type-of [id] 
-  [q] (pokemon-type-r id q)
-  :post #(let [t (vec (sort %))]
-           (when (not-empty t)
-             t)))
+(defn type-of [p]
+  (vec-sort (l/run* [t] (pokemon-type-r *gen* p t))))
 
-(lhacks/defquery abilities-of [id] 
-  [q] (pokemon-ability-r id q)
-  :post #(let [as (sort %)]
-           (when (not-empty as)
-             as)))
+(defn type-of* [p]
+  (group-keys (group-vals-vec (l/run* [g q] (pokemon-type-r g p q)))))
 
-(lhacks/defquery ability-monset-of [aid]
-  [q] (pokemon-ability-r q aid))
+(defn has-type? [p t]
+  (cond 
+   (keyword? t) (lhacks/run-bool (pokemon-type-r *gen* p t))
+   (coll? t) (lhacks/run-bool (l/everyg #(pokemon-type-r *gen* p %) t))))
 
-(lhacks/defsingleton hp-of [id]
-  [q] (pokemon-hp-r id q))
+(defn who-has-type [t]
+  (lhacks/run-strict [q]
+                     (cond
+                      (keyword? t) (pokemon-type-r *gen* q t)
+                      (coll? t) (l/everyg #(pokemon-type-r *gen* q %) t))))
 
-(lhacks/defsingleton atk-of [id]
-  [q] (pokemon-atk-r id q))
+(defn who-has-type* [t]
+  (group-keys
+   (lhacks/run-strict [g q]
+                      (cond
+                       (keyword? t) (pokemon-type-r g q t)
+                       (coll? t) (l/everyg #(pokemon-type-r g q %) t)))))
 
-(lhacks/defsingleton def-of [id]
-  [q] (pokemon-def-r id q))
+(defn abilities-of [p]
+  (lhacks/run-set [q] (pokemon-ability-r *gen* p q)))
 
-(lhacks/defsingleton spatk-of [id]
-  [q] (pokemon-spatk-r id q))
+(defn abilities-of* [p]
+  (group-keys (l/run* [g q] (pokemon-ability-r g p q))))
 
-(lhacks/defsingleton spdef-of [id]
-  [q] (pokemon-spdef-r id q))
+(defn has-ability? [p a]
+  (lhacks/run-bool (pokemon-ability-r *gen* p a)))
 
-(lhacks/defsingleton speed-of [id]
-  [q] (pokemon-speed-r id q))
+(defn who-has-ability [a]
+  (lhacks/run-strict [q] (pokemon-ability-r *gen* q a)))
 
-(lhacks/defsingleton weight-of [id]
-  [q] (pokemon-weight-r id q))
+(defn who-has-ability* [a]
+  (group-keys (l/run* [g q] (pokemon-ability-r g q a))))
+ 
+(defn hp-of [p]
+  (lhacks/run-1 [q] (pokemon-hp-r *gen* p q)))
 
-(lhacks/defsingleton height-of [id]
-  [q] (pokemon-height-r id q))
+(defn hp-of* [p]
+  (group-keys (l/run* [g q] (pokemon-hp-r g p q))))
+
+(defn atk-of [p]
+  (lhacks/run-1 [q] (pokemon-atk-r *gen* p q)))
+
+(defn atk-of* [p]
+  (group-keys (l/run* [g q] (pokemon-atk-r g p q))))
+
+(defn def-of [p]
+  (lhacks/run-1 [q] (pokemon-def-r *gen* p q)))
+
+(defn def-of* [p]
+  (group-keys (l/run* [g q] (pokemon-def-r g p q))))
+
+(defn spatk-of [p]
+  (lhacks/run-1 [q] (pokemon-spatk-r *gen* p q)))
+
+(defn spatk-of* [p]
+  (group-keys (l/run* [g q] (pokemon-spatk-r g p q))))
+
+(defn spdef-of [p]
+  (lhacks/run-1 [q] (pokemon-spdef-r *gen* p q)))
+
+(defn spdef-of* [p]
+  (group-keys (l/run* [g q] (pokemon-spdef-r g p q))))
+
+(defn speed-of [p]
+  (lhacks/run-1 [q] (pokemon-speed-r *gen* p q)))
+
+(defn speed-of* [p]
+  (group-keys (l/run* [g q] (pokemon-speed-r g p q))))
 
 (defn defpokemon
   "Helper function to define a Pokemon."
@@ -307,90 +302,141 @@
          gheight :height}]
 
   (doseq [g (gens-since gen)]
-    (genfact g pokemon-r id))
+    (l/fact pokemon-r g id))
   
   (l/fact name-r id name)
   
   (letfn [(mg [x] (make-generational gen x))]
     (doseq [[g types] (mg gtypes)
             type types]
-      (genfact g pokemon-type-r id type))
+      (l/fact pokemon-type-r g id type))
     
     (doseq [[g abilities] (mg gabilities)
             ability abilities]
       (when-not (contains? official-gens-without-abilities g) 
-        (genfact g pokemon-ability-r id ability)))
+        (l/fact pokemon-ability-r g id ability)))
     
     (doseq [[g stats] (mg gstats)]
       ;; Ugly hack; for :rb spatk/spdef are combined.
       (if (= g :rb)
         (let [[hp atk def special speed] stats]
-          (genfact g pokemon-hp-r id hp)
-          (genfact g pokemon-atk-r id atk)
-          (genfact g pokemon-def-r id def)
-          (genfact g pokemon-spatk-r id special)
-          (genfact g pokemon-spdef-r id special)
-          (genfact g pokemon-speed-r id speed))
+          (l/fact pokemon-hp-r g id hp)
+          (l/fact pokemon-atk-r g id atk)
+          (l/fact pokemon-def-r g id def)
+          (l/fact pokemon-spatk-r g id special)
+          (l/fact pokemon-spdef-r g id special)
+          (l/fact pokemon-speed-r g id speed))
         (let [[hp atk def spatk spdef speed] stats]
-          (genfact g pokemon-hp-r id hp)
-          (genfact g pokemon-atk-r id atk)
-          (genfact g pokemon-def-r id def)
-          (genfact g pokemon-spatk-r id spatk)
-          (genfact g pokemon-spdef-r id spdef)
-          (genfact g pokemon-speed-r id speed))))
+          (l/fact pokemon-hp-r g id hp)
+          (l/fact pokemon-atk-r g id atk)
+          (l/fact pokemon-def-r g id def)
+          (l/fact pokemon-spatk-r g id spatk)
+          (l/fact pokemon-spdef-r g id spdef)
+          (l/fact pokemon-speed-r g id speed))))
     
     (doseq [[g egggroups] (mg gegggroups)
             egggroup egggroups]
-      (genfact g pokemon-egggroup-r id egggroup))
+      (l/fact pokemon-egggroup-r g id egggroup))
     
     (doseq [[g weight] (mg gweight)]
-      (genfact g pokemon-weight-r id weight))
+      (l/fact pokemon-weight-r g id weight))
     
     (doseq [[g height] (mg gheight)]
-      (genfact g pokemon-height-r id height))))
-
+      (l/fact pokemon-height-r g id height))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Evolutions
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defgenrel directly-evolves-r p p')
+(defgenrel evolves-r ^:index p1 ^:index p2)
 
-(defn evolves-r [p p']
-  (l/conde
-   ((directly-evolves-r p p'))
-   ((l/fresh [p'']
-           (directly-evolves-r p p'')
-           (evolves-r p'' p')))))
+(defn evolves?
+  [p1 p2]
+  (lhacks/run-bool (evolves-r *gen* p1 p2)))
 
-(lhacks/defquery preevos-of [id]
-  [q] (evolves-r id q))
+(defn preevos-of [p]
+  (lhacks/run-set [q]
+        (l/conde
+         ((evolves-r *gen* q p))
+         ((l/== q p)
+          (pokemon-r *gen* p)))))
 
-(lhacks/defquery postevos-of [id]
-  [q] (evolves-r q id))
- 
-(lhacks/defquery family-of [id]
-  [q] (l/conde
-       ((evolves-r q id))
-       ((evolves-r id q))))
+(defn preevos-of* [p]
+  (group-keys (l/run* [g q]
+                      (l/conde
+                       ((evolves-r g q p))
+                       ((l/== q p)
+                        (pokemon-r g p))))))
 
-(defn ^:private group-transitive
-  "(group-transitive [1 2 3]) -> [[1 2] [2 3]]"
-  [xs] (map vector xs (rest xs)))
+;; FIXME sorting is slow here
+(defn firstevo-of [p]
+  (first (sort evolves? (l/run* [q]
+                                (l/conde
+                                 ((evolves-r *gen* q p))
+                                 ((l/== q p)
+                                  (pokemon-r *gen* p)))))))
+
+;; FIXME need firstevo-of*
+
+(defn postevos-of [p]
+  (lhacks/run-set [q]
+                  (l/conde
+                   ((l/== q p))
+                   ((evolves-r *gen* p q)))))
+
+(defn postevos-of* [p]
+  (group-keys (lhacks/run-strict [g q]
+                     (l/conde
+                      ((evolves-r g p q))
+                      ((l/== q p)
+                       (pokemon-r g p))))))
+
+(defn family-of [p]
+  (postevos-of (firstevo-of p)))
+
+;; FIXME need family-of*
 
 (defn ^:private make-vector-if-not
   "Take a wild guess."
   [x] (if (vector? x) x [x]))
 
+(defn ^:private filter-alternatives
+  [g alternatives]
+  (filterv #(in-gen g (pokemon? %)) alternatives))
+
+(defn ^:private zip
+  "You know, like Python or Haskell."
+  [xs ys]
+  (map vector xs ys))
+
+(defn ^:private group-evos
+  "(group-evos '([:bulbasaur] [:ivysaur] [:venusaur])) -> 
+   '([:bulbasaur :ivysaur] [:bulbasaur :venusaur] [:ivysaur :venusaur])"
+  [[palts & rest]]
+  (cond
+   (empty? rest) nil 
+   :else (concat (for [p palts
+                       pevoalts rest
+                       pevo pevoalts]
+                   [p pevo])
+                 (group-evos rest))))
+
 (defn ^:private fixup-family-tree
   [tree]
   (for [g official-gens]
-    (let [tree' (for [x tree]
-                  ;; (deffamily :sneasel :weavile) is shorthand for (deffamily [:sneasel] [:weavile])
-                  (let [alternatives (make-vector-if-not x)]
-                    ;; Ignore Pokemon not in this generation
-                    (filter #(in-gen g (pokemon? %)) alternatives)))] 
-      [g (group-transitive tree')])))
+    [g (->> tree
+            (map #(->> %
+                       ;; Ensure each element is a vector, b/c (deffamily
+                       ;; :sneasel :weavile) is shorthand for (deffamily
+                       ;; [:sneasel] [:weavile])
+                       make-vector-if-not
+                       ;; Then, ignore Pokemon not in this generation
+                       (filter-alternatives g)))
+            ;; We now have a sequence of vectors, where each vector represents
+            ;; alternatives.  Pair up adjacents, so '([:bulbasaur] [:ivysaur]
+            ;; [:venusaur]) -> '([:bulbasaur :ivysaur] [:ivysaur :venusaur]) and
+            ;; then apply the transitive closure.
+            group-evos)]))
 
 (defn deffamily
  "Define a family tree. 
@@ -407,55 +453,81 @@
   Pokemon that did not exist in a particular generation are ignored."
   [& tree]
   (doseq [[g pairs] (fixup-family-tree tree)
-          [palts pevoalts] pairs
-          p palts
-          pevo pevoalts]
-    (genfact g directly-evolves-r p pevo)))
-
+          [p pevo] pairs]
+    (l/fact evolves-r g p pevo)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Learnsets
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defgenrel learns-sans-preevos-r p m)
+(defgenrel learns-sans-preevos-r ^:index p ^:index m)
 
-(defn learns-r
-  [p m]
-  (l/conde ((learns-sans-preevos-r p m))
+;; You'd think this would work fine, but it is SLOW. It seems to just ignore any
+;; indexes we throw at it. A smarter query optimizer would not have this
+;; problem. We comment it out, and use more specialized queries in the below
+;; functions.
+;;
+;; ... I'd really like to move away from core.logic.
+;;
+;; For that matter, most of these functions are slow for some reason. 
+#_(defn learns-r
+  [g p m]
+  (l/conde ((learns-sans-preevos-r g p m))
            ((l/fresh [p']
-                     (evolves-r p' p) 
-                     (learns-sans-preevos-r p' m)))))
+                     (evolves-r g p' p)
+                     (learns-sans-preevos-r g p' m)))))
 
-(lhacks/defpredicate learns? [pid mid]
-  (learns-r pid mid))
+;; FIXME Slow...
+(defn has-move? [p m]
+  (some #(lhacks/run-bool (learns-sans-preevos-r *gen* % m))
+        (preevos-of p)))
 
-(lhacks/defquery move-monset-of [mid]
-  [q] (learns-r q mid))
+;; FIXME fragile when postevos are listed as learning the move as well.
+(defn who-has-move [m]
+  (doall (mapcat postevos-of
+                 (l/run* [q] (learns-sans-preevos-r *gen* q m)))))
 
-(lhacks/defquery learnset-of [pid]
-  [q] (learns-r pid q))
+(defn who-has-move* [m]
+  (group-keys (mapcat (fn [[g p]]
+                        (for [postevo (postevos-of p)
+                              :when (in-gen g (pokemon? postevo))]
+                          [g postevo]))
+                      (l/run* [g q] (learns-sans-preevos-r g q m)))))
+
+;; FIXME fragile when postevos are listed as learning the move as well.
+(defn moves-of [p]
+  (mapcat #(l/run* [q] (learns-sans-preevos-r *gen* % q)) (preevos-of p)))
+
+(defn moves-of* [p]
+  (group-keys (mapcat (fn [[preevo _]]
+                        (l/run* [g q]
+                                (learns-sans-preevos-r g preevo q)))
+                      ;; We abuse this command to get all of the preevos,
+                      ;; irrespective of generation.
+                      (preevos-of* p))))
 
 (defn deflearnset
-  [gen & pairs]
+  [g & pairs]
   (doseq [[p ms] (partition 2 pairs)
           m ms]
-    (genfact gen learns-sans-preevos-r p m)))
+    (l/fact learns-sans-preevos-r g p m)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Summarizations
+;; Dex server
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defn ^:private load-dex-files
+  "Load every .clj script under src/pokedb. The intention is to initialize the
+  pokedex relations."
+  []
+  (doseq [f (file-seq (io/file (io/resource "pokedb/.")))]
+    (when (.isFile f)
+      (load-file (.getPath f)))))
 
-(defn summarize-pokemon
-  "Summarize a Pokemon across generations."
-  [p]
-  (let [rgens (reverse official-gens)] 
-    {:type (in-gens-relative rgens (type-of p))
-     ;; this is intentionally not rgens, because abilities are always additions.
-     :abilities (in-gens-relative official-gens (abilities-of p))
-     :hp (in-gens-relative rgens (hp-of p))
-     :atk (in-gens-relative rgens (atk-of p))
-     :def (in-gens-relative rgens (def-of p))
-     :spatk (in-gens-relative rgens (spatk-of p))
-     :spdef (in-gens-relative rgens (spdef-of p))
-     :speed (in-gens-relative rgens (speed-of p))}))
+(defn start-dex
+  "Start up the dex; load up all the files necessary.
+
+  Don't call this function directly; prefer smogon.core/start-all with
+  :start-dex true."
+  []
+  (load-dex-files))
