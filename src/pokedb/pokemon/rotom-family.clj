@@ -67,7 +67,8 @@
   :weight [0.3]
   :height [0.3])
 
-(deffamily :rotom [:rotom-fan :rotom-frost :rotom-heat :rotom-mow :rotom-wash])
+(deffamilygraph (familyclique :rotom :rotom-fan :rotom-frost
+                              :rotom-heat :rotom-mow :rotom-wash))
 
 (deflearnset :dp
   :rotom [:astonish :charge :charge-beam :confuse-ray :dark-pulse :discharge :double-team :dream-eater :endure :facade :flash :frustration :hidden-power :light-screen :mud-slap :natural-gift :ominous-wind :pain-split :protect :psych-up :rain-dance :reflect :rest :return :secret-power :shadow-ball :shock-wave :signal-beam :sleep-talk :snatch :snore :spite :substitute :sucker-punch :sunny-day :swagger :swift :thief :thunder :thunder-wave :thunderbolt :thundershock :toxic :trick :uproar :will-o-wisp])
