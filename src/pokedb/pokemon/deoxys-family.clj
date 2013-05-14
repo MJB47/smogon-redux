@@ -45,7 +45,8 @@
   :weight [60.8]
   :height [1.7])
 
-(deffamily :deoxys [:deoxys-a :deoxys-d :deoxys-s])
+(deffamilygraph
+  (familyclique :deoxys :deoxys-a :deoxys-d :deoxys-s))
 
 (deflearnset :rs
   :deoxys [:aerial-ace :body-slam :brick-break :calm-mind :cosmic-power :cut :double-edge :double-team :dream-eater :facade :flash :focus-punch :frustration :hidden-power :hyper-beam :ice-beam :icy-wind :knock-off :leer :light-screen :mimic :night-shade :nightmare :protect :psychic :psycho-boost :pursuit :rain-dance :recover :reflect :rest :return :rock-smash :rock-tomb :safeguard :secret-power :seismic-toss :shadow-ball :shock-wave :skill-swap :snatch :solarbeam :strength :substitute :sunny-day :swagger :taunt :teleport :thunder :thunder-wave :thunderbolt :torment :toxic :water-pulse :wrap])
