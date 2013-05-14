@@ -44,19 +44,31 @@
             (dex/abilities-of kpoke) " | Stats: " (dex/hp-of kpoke) "/" 
             (dex/atk-of kpoke) "/" (dex/def-of kpoke) "/" (dex/spatk-of kpoke) 
             "/" (dex/spdef-of kpoke) "/" (dex/speed-of kpoke)) 
-        (str poke " is not a valid pokemon"))))
+        (str poke " is not a valid pokemon, did you forget to hyphenate? (-)"))))
+
+(defn learn 
+    "tests whether a pokemon can learn a move or not"
+    [poke move]
+    (if (and (dex/pokemon? (keyword poke)) (dex/move? (keyword move)))
+        (if-not (nil? (find (dex/has-move (keyword move)) (keyword poke))) 
+            (str (clojure.string/capitalize poke) " DOES learn the move: " (clojure.string/capitalize move)) 
+            (str (clojure.string/capitalize poke) " DOES NOT learn the move: " (clojure.string/capitalize move)))
+        (str "Not a valid pokemon or move (or both!). Did you forget to hypenate? (-)")))
 
 ; need to return: Channel, Sender, Login, Hostname, Message
 (defn on-message 
   [conn msg]
   (let [chan (nth (clojure.string/split msg #"\s+") 2)
-        pmsg (nth (clojure.string/split msg #":+" 3) 2)
+        pmsg (nth (clojure.string/split msg #":+" 3) 2 nil)
         smsg (clojure.string/split pmsg #"\s")]
     (cond 
         (= "?hello" pmsg)
             (message conn chan "sup")
-        (= "?data" (nth smsg 0))
-            (message conn chan (data (nth smsg 1 "You didnt provide a pokemon!"))))))
+        (= "?data" (nth smsg 0 nil))
+            (message conn chan (data (nth smsg 1 "You didnt provide a pokemon!")))
+        (= "?learn" (nth smsg 0 nil))
+            (message conn chan (learn (nth smsg 1 "You didnt provide a pokemon!") 
+                                      (nth smsg 2 "You didnt provide a move"))))))
 
 ; can join multiple channels with the syntax "#showdown,#trivia"
 (defn join-chan 
@@ -64,21 +76,21 @@
     (write conn (str "JOIN " chan)))
 
 (defn conn-handler 
-  [conn]
-  (while (nil? (:exit @conn))
-    (let [msg (.readLine (:in @conn))]
-        ;(println msg) ; use this when you want to see what the bot see's. Debugging
-        (if (= (nth (clojure.string/split msg #"\s+") 1) "001")
-            (join-chan conn "#penis"))
-        (if (= (nth (clojure.string/split msg #"\s+") 1) "PRIVMSG") 
-            (on-message conn msg))
-        (if (= (nth (clojure.string/split msg #"\s+") 1) "INVITE")
-            (join-chan conn (nth (clojure.string/split msg #":+" 3) 2)))
-        (cond 
-            (re-find #"^ERROR :Closing Link:" msg) 
-            (dosync (alter conn merge {:exit true}))
-            (re-find #"^PING" msg)
-            (write conn (str "PONG "  (re-find #":.*" msg)))))))
+    [conn]
+    (while (nil? (:exit @conn))
+        (let [msg (.readLine (:in @conn))]
+            ;(println msg) ; use this when you want to see what the bot see's. Debugging
+            (if (= (nth (clojure.string/split msg #"\s+") 1) "001")
+                (join-chan conn "#penis"))
+            (if (= (nth (clojure.string/split msg #"\s+") 1) "PRIVMSG") 
+                (on-message conn msg))
+            (if (= (nth (clojure.string/split msg #"\s+") 1) "INVITE")
+                (join-chan conn (nth (clojure.string/split msg #":+" 3) 2)))
+            (cond 
+                (re-find #"^ERROR :Closing Link:" msg) 
+                (dosync (alter conn merge {:exit true}))
+                (re-find #"^PING" msg)
+                (write conn (str "PONG "  (re-find #":.*" msg)))))))
 
 (defn login 
     [conn user]
