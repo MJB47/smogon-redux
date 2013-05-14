@@ -63,11 +63,11 @@
         smsg (clojure.string/split pmsg #"\s")]
     (cond 
         (= "?hello" pmsg)
-            (message conn chan "sup")
+        (message conn chan "sup")
         (= "?data" (nth smsg 0 nil))
-            (message conn chan (data (nth smsg 1 nil)))
+        (message conn chan (data (nth smsg 1 nil)))
         (= "?learn" (nth smsg 0 nil))
-            (message conn chan (learn (nth smsg 1 nil) (nth smsg 2 nil))))))
+        (message conn chan (learn (nth smsg 1 nil) (nth smsg 2 nil))))))
 
 ; can join multiple channels with the syntax "#showdown,#trivia"
 (defn join-chan 
@@ -79,13 +79,13 @@
     (while (nil? (:exit @conn))
         (let [msg (.readLine (:in @conn))]
             ;(println msg) ; use this when you want to see what the bot see's. Debugging
-            (if (= (nth (clojure.string/split msg #"\s+") 1) "001")
-                (join-chan conn "#penis"))
-            (if (= (nth (clojure.string/split msg #"\s+") 1) "PRIVMSG") 
-                (on-message conn msg))
-            (if (= (nth (clojure.string/split msg #"\s+") 1) "INVITE")
-                (join-chan conn (nth (clojure.string/split msg #":+" 3) 2)))
             (cond 
+                (= (nth (clojure.string/split msg #"\s+") 1) "001")
+                (join-chan conn "#penis")
+                (= (nth (clojure.string/split msg #"\s+") 1) "PRIVMSG") 
+                (on-message conn msg)
+                (= (nth (clojure.string/split msg #"\s+") 1) "INVITE")
+                (join-chan conn (nth (clojure.string/split msg #":+" 3) 2))
                 (re-find #"^ERROR :Closing Link:" msg) 
                 (dosync (alter conn merge {:exit true}))
                 (re-find #"^PING" msg)
