@@ -65,10 +65,9 @@
         (= "?hello" pmsg)
             (message conn chan "sup")
         (= "?data" (nth smsg 0 nil))
-            (message conn chan (data (nth smsg 1 "You didnt provide a pokemon!")))
+            (message conn chan (data (nth smsg 1 nil)))
         (= "?learn" (nth smsg 0 nil))
-            (message conn chan (learn (nth smsg 1 "You didnt provide a pokemon!") 
-                                      (nth smsg 2 "You didnt provide a move"))))))
+            (message conn chan (learn (nth smsg 1 nil) (nth smsg 2 nil))))))
 
 ; can join multiple channels with the syntax "#showdown,#trivia"
 (defn join-chan 
