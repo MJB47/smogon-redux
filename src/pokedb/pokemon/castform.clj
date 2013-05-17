@@ -13,7 +13,7 @@
   :weight [0.8]
   :height [0.3])
 
-(deffamily :castform)
+(deffamily (familychain :castform))
 
 (deflearnset :rs
   :castform [:attract :blizzard :body-slam :defense-curl :double-edge :double-team :ember :endure :facade :fire-blast :flamethrower :flash :frustration :future-sight :hail :hidden-power :ice-beam :icy-wind :mimic :powder-snow :protect :psych-up :rain-dance :rest :return :sandstorm :secret-power :shadow-ball :shock-wave :sleep-talk :snore :solarbeam :substitute :sunny-day :swagger :swift :tackle :thief :thunder :thunder-wave :thunderbolt :toxic :water-gun :water-pulse :weather-ball])

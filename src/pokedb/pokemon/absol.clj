@@ -13,7 +13,7 @@
   :weight [47]
   :height [1.2])
 
-(deffamily :absol)
+(deffamily (familychain :absol))
 
 (deflearnset :rs
   :absol [:aerial-ace :attract :baton-pass :bite :blizzard :body-slam :calm-mind :counter :curse :cut :double-edge :double-team :dream-eater :endure :facade :faint-attack :fire-blast :flamethrower :flash :frustration :fury-cutter :future-sight :hail :hidden-power :hyper-beam :ice-beam :icy-wind :iron-tail :leer :magic-coat :mimic :mud-slap :nightmare :perish-song :protect :psych-up :quick-attack :rain-dance :razor-wind :rest :return :rock-slide :rock-smash :sandstorm :scratch :secret-power :shadow-ball :shock-wave :slash :sleep-talk :snatch :snore :strength :substitute :sunny-day :swagger :swift :swords-dance :taunt :thief :thunder :thunder-wave :thunderbolt :torment :toxic :water-pulse])

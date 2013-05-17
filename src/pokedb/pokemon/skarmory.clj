@@ -13,7 +13,7 @@
   :weight [50.5]
   :height [1.7])
 
-(deffamily :skarmory)
+(deffamily (familychain :skarmory))
 
 (deflearnset :gs
   :skarmory [:agility :attract :curse :cut :detect :double-team :drill-peck :endure :fly :frustration :fury-attack :hidden-power :leer :mud-slap :peck :protect :pursuit :rest :return :sand-attack :sandstorm :sky-attack :sleep-talk :snore :steel-wing :sunny-day :swagger :swift :thief :toxic :whirlwind])

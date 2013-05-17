@@ -12,7 +12,7 @@
   :weight [178]
   :height [1.9])
 
-(deffamily :raikou)
+(deffamily (familychain :raikou))
 
 (deflearnset :gs
   :raikou [:bite :crunch :curse :cut :detect :dig :double-team :endure :flash :frustration :headbutt :hidden-power :hyper-beam :iron-tail :leer :mud-slap :protect :psych-up :quick-attack :rain-dance :reflect :rest :return :roar :rock-smash :sandstorm :sleep-talk :snore :spark :strength :sunny-day :swagger :swift :thunder :thunderbolt :thundershock :toxic :zap-cannon])

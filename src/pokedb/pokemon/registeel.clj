@@ -13,7 +13,7 @@
   :weight [205]
   :height [1.9])
 
-(deffamily :registeel)
+(deffamily (familychain :registeel))
 
 (deflearnset :rs
   :registeel [:aerial-ace :amnesia :ancientpower :body-slam :brick-break :counter :curse :defense-curl :double-edge :double-team :dynamicpunch :earthquake :endure :explosion :facade :focus-punch :frustration :hidden-power :hyper-beam :ice-punch :iron-defense :lock-on :mega-kick :mega-punch :metal-claw :mimic :mud-slap :protect :psych-up :rain-dance :rest :return :rock-slide :rock-smash :rock-tomb :rollout :safeguard :sandstorm :secret-power :seismic-toss :selfdestruct :shock-wave :sleep-talk :snore :strength :substitute :sunny-day :superpower :swagger :thunder :thunder-wave :thunderbolt :thunderpunch :toxic :zap-cannon :body-slam :double-edge :mimic :seismic-toss :selfdestruct])

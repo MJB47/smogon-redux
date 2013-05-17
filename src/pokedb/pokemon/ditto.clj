@@ -14,7 +14,7 @@
   :weight [4]
   :height [0.3])
 
-(deffamily :ditto)
+(deffamily (familychain :ditto))
 
 (deflearnset :rb
   :ditto [:transform])

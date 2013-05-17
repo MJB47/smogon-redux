@@ -12,7 +12,7 @@
   :weight [683]
   :height [5.4])
 
-(deffamily :dialga)
+(deffamily (familychain :dialga))
 
 (deflearnset :dp
   :dialga [:aerial-ace :ancientpower :aura-sphere :blizzard :brick-break :bulk-up :cut :double-team :draco-meteor :dragon-claw :dragon-pulse :dragonbreath :earth-power :earthquake :endure :facade :fire-blast :flamethrower :flash :flash-cannon :frustration :fury-cutter :giga-impact :gravity :headbutt :heal-block :hidden-power :hyper-beam :ice-beam :iron-defense :iron-head :iron-tail :magnet-rise :metal-burst :metal-claw :mud-slap :natural-gift :outrage :overheat :power-gem :protect :psych-up :rain-dance :rest :return :roar :roar-of-time :rock-slide :rock-smash :rock-tomb :safeguard :sandstorm :scary-face :secret-power :shadow-claw :shock-wave :slash :sleep-talk :snore :stealth-rock :stone-edge :strength :substitute :sunny-day :swagger :swift :thunder :thunder-wave :thunderbolt :toxic :trick-room :twister])

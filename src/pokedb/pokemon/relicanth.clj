@@ -13,7 +13,7 @@
   :weight [23.4]
   :height [1])
 
-(deffamily :relicanth)
+(deffamily (familychain :relicanth))
 
 (deflearnset :rs
   :relicanth [:amnesia :ancientpower :attract :blizzard :body-slam :calm-mind :dive :double-edge :double-team :earthquake :endure :facade :frustration :hail :harden :hidden-power :hydro-pump :hyper-beam :ice-beam :icy-wind :magnitude :mimic :mud-slap :mud-sport :protect :psych-up :rain-dance :rest :return :rock-slide :rock-smash :rock-tomb :safeguard :sandstorm :secret-power :skull-bash :sleep-talk :snore :substitute :surf :swagger :tackle :take-down :toxic :water-gun :water-pulse :water-sport :waterfall :yawn :body-slam :icy-wind :mimic])

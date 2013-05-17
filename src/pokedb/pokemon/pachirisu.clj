@@ -12,7 +12,7 @@
   :weight [3.9]
   :height [0.4])
 
-(deffamily :pachirisu)
+(deffamily (familychain :pachirisu))
 
 (deflearnset :dp
   :pachirisu [:attract :bide :bite :captivate :charge-beam :charm :covet :cut :defense-curl :dig :discharge :double-team :endure :facade :fake-tears :flail :flash :flatter :fling :frustration :grass-knot :growl :gunk-shot :headbutt :helping-hand :hidden-power :iron-tail :last-resort :light-screen :magnet-rise :mud-slap :natural-gift :protect :quick-attack :rain-dance :rest :return :rollout :secret-power :seed-bomb :shock-wave :sleep-talk :snore :spark :substitute :super-fang :swagger :sweet-kiss :swift :thunder :thunder-wave :thunderbolt :thunderpunch :toxic :u-turn :uproar])

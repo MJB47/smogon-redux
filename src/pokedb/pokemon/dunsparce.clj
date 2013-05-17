@@ -13,7 +13,7 @@
   :weight [14]
   :height [1.5])
 
-(deffamily :dunsparce)
+(deffamily (familychain :dunsparce))
 
 (deflearnset :gs
   :dunsparce [:ancientpower :attract :bide :bite :curse :defense-curl :dig :double-team :dream-eater :endure :flamethrower :frustration :glare :headbutt :hidden-power :iron-tail :mud-slap :nightmare :protect :psych-up :pursuit :rage :rain-dance :rest :return :rock-slide :rock-smash :rollout :screech :sleep-talk :snore :solarbeam :spite :strength :sunny-day :swagger :take-down :thief :thunder :thunderbolt :toxic :zap-cannon])
