@@ -13,7 +13,7 @@
   :weight [40]
   :height [1.4])
 
-(deffamily :latias)
+(deffamily (familychain :latias))
 
 (deflearnset :rs
   :latias [:aerial-ace :attract :body-slam :calm-mind :charm :cut :dive :double-edge :double-team :dragon-claw :dragonbreath :dream-eater :earthquake :endure :facade :flash :fly :frustration :fury-cutter :helping-hand :hidden-power :hyper-beam :ice-beam :icy-wind :light-screen :mimic :mist-ball :mud-slap :protect :psych-up :psychic :psywave :rain-dance :recover :reflect :refresh :rest :return :roar :safeguard :sandstorm :secret-power :shadow-ball :shock-wave :sleep-talk :snore :solarbeam :steel-wing :substitute :sunny-day :surf :swagger :swift :thunder :thunder-wave :thunderbolt :toxic :water-pulse :water-sport :waterfall :wish :body-slam :double-edge :icy-wind :mimic])

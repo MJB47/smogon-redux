@@ -12,7 +12,7 @@
   :weight [0.3]
   :height [0.3])
 
-(deffamily :uxie)
+(deffamily (familychain :uxie))
 
 (deflearnset :dp
   :uxie [:amnesia :calm-mind :charge-beam :confusion :double-team :dream-eater :endure :energy-ball :extrasensory :facade :fire-punch :flail :flash :fling :frustration :future-sight :giga-drain :giga-impact :grass-knot :headbutt :heal-bell :helping-hand :hidden-power :hyper-beam :ice-punch :imprison :iron-tail :knock-off :light-screen :magic-coat :memento :mud-slap :natural-gift :protect :psych-up :psychic :rain-dance :recycle :reflect :rest :return :role-play :safeguard :sandstorm :secret-power :shadow-ball :shock-wave :signal-beam :skill-swap :sleep-talk :snore :solarbeam :stealth-rock :substitute :sunny-day :swagger :swift :thunder :thunder-wave :thunderbolt :thunderpunch :toxic :trick :trick-room :u-turn :water-pulse :yawn :zen-headbutt])

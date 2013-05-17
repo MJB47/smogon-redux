@@ -14,7 +14,7 @@
   :weight [220]
   :height [2.5])
 
-(deffamily :lapras)
+(deffamily (familychain :lapras))
 
 (deflearnset :rb
   :lapras [:bide :blizzard :body-slam :bubblebeam :confuse-ray :double-edge :double-team :dragon-rage :growl :horn-drill :hydro-pump :hyper-beam :ice-beam :mimic :mist :psychic :psywave :rage :reflect :rest :sing :skull-bash :solarbeam :strength :substitute :surf :take-down :thunder :thunderbolt :toxic :water-gun])

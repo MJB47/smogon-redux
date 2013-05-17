@@ -13,7 +13,7 @@
   :weight [8.7]
   :height [0.6])
 
-(deffamily :luvdisc)
+(deffamily (familychain :luvdisc))
 
 (deflearnset :rs
   :luvdisc [:agility :attract :blizzard :charm :dive :double-edge :double-team :endure :facade :flail :frustration :hail :hidden-power :ice-beam :icy-wind :mimic :mud-sport :protect :psych-up :rain-dance :rest :return :safeguard :secret-power :sleep-talk :snore :splash :substitute :supersonic :surf :swagger :sweet-kiss :swift :tackle :take-down :toxic :water-gun :water-pulse :water-sport :waterfall :double-edge :icy-wind :mimic])

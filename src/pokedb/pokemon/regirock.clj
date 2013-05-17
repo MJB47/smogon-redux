@@ -13,7 +13,7 @@
   :weight [230]
   :height [1.7])
 
-(deffamily :regirock)
+(deffamily (familychain :regirock))
 
 (deflearnset :rs
   :regirock [:ancientpower :body-slam :brick-break :counter :curse :defense-curl :dig :double-edge :double-team :dynamicpunch :earthquake :endure :explosion :facade :fire-punch :focus-punch :frustration :hidden-power :hyper-beam :ice-punch :iron-defense :lock-on :mega-kick :mega-punch :mimic :mud-slap :protect :psych-up :rest :return :rock-slide :rock-smash :rock-throw :rock-tomb :rollout :safeguard :sandstorm :secret-power :seismic-toss :selfdestruct :shock-wave :sleep-talk :snore :strength :substitute :sunny-day :superpower :swagger :thunder :thunder-wave :thunderbolt :thunderpunch :toxic :zap-cannon :body-slam :double-edge :mimic :seismic-toss :selfdestruct])

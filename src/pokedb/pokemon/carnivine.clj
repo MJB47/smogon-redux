@@ -12,7 +12,7 @@
   :weight [27]
   :height [1.4])
 
-(deffamily :carnivine)
+(deffamily (familychain :carnivine))
 
 (deflearnset :dp
   :carnivine [:attract :bind :bite :bug-bite :bullet-seed :captivate :crunch :cut :double-team :endure :energy-ball :facade :faint-attack :flash :fling :frustration :fury-cutter :gastro-acid :giga-drain :giga-impact :grass-knot :growth :hidden-power :hyper-beam :ingrain :knock-off :leech-seed :magical-leaf :mud-slap :natural-gift :payback :power-whip :protect :razor-leaf :rest :return :secret-power :seed-bomb :slam :sleep-powder :sleep-talk :sludge-bomb :snore :solarbeam :spit-up :stockpile :stun-spore :substitute :sunny-day :swagger :swallow :sweet-scent :swords-dance :synthesis :thief :toxic :vine-whip :worry-seed :wring-out])

@@ -12,7 +12,7 @@
   :weight [336]
   :height [4.2])
 
-(deffamily :palkia)
+(deffamily (familychain :palkia))
 
 (deflearnset :dp
   :palkia [:aerial-ace :ancientpower :aqua-tail :aura-sphere :avalanche :blizzard :brick-break :brine :bulk-up :cut :dive :double-team :draco-meteor :dragon-claw :dragon-pulse :dragonbreath :earth-power :earthquake :endure :facade :fire-blast :flamethrower :fling :focus-blast :focus-punch :frustration :fury-cutter :giga-impact :gravity :hail :headbutt :heal-block :hidden-power :hydro-pump :hyper-beam :ice-beam :mud-slap :natural-gift :outrage :power-gem :protect :psych-up :rain-dance :rest :return :roar :rock-slide :rock-smash :rock-tomb :safeguard :sandstorm :scary-face :secret-power :shadow-claw :shock-wave :slash :sleep-talk :snore :spacial-rend :stone-edge :strength :substitute :sunny-day :surf :swagger :swift :thunder :thunder-wave :thunderbolt :toxic :trick-room :twister :water-pulse :whirlpool])

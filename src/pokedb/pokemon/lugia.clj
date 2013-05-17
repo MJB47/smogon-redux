@@ -13,7 +13,7 @@
   :weight [216]
   :height [5.2])
 
-(deffamily :lugia)
+(deffamily (familychain :lugia))
 
 (deflearnset :gs
   :lugia [:aeroblast :ancientpower :blizzard :curse :detect :double-team :dragonbreath :dream-eater :earthquake :endure :fly :frustration :future-sight :giga-drain :gust :headbutt :hidden-power :hydro-pump :hyper-beam :ice-beam :icy-wind :iron-tail :mud-slap :nightmare :protect :psych-up :psychic :rain-dance :recover :rest :return :roar :rock-smash :safeguard :sandstorm :shadow-ball :sleep-talk :snore :steel-wing :strength :sunny-day :surf :swagger :swift :thunder :thunderbolt :toxic :waterfall :whirlpool :whirlwind :zap-cannon])

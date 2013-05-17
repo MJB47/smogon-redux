@@ -13,7 +13,7 @@
   :weight [154]
   :height [1.2])
 
-(deffamily :solrock)
+(deffamily (familychain :solrock))
 
 (deflearnset :rs
   :solrock [:body-slam :calm-mind :confusion :cosmic-power :defense-curl :double-edge :double-team :dream-eater :earthquake :endure :explosion :facade :fire-blast :fire-spin :flamethrower :flash :frustration :harden :hidden-power :hyper-beam :light-screen :mimic :overheat :protect :psych-up :psychic :psywave :reflect :rest :return :rock-slide :rock-throw :rock-tomb :rollout :safeguard :sandstorm :secret-power :selfdestruct :shadow-ball :skill-swap :sleep-talk :snore :solarbeam :substitute :sunny-day :swagger :swift :tackle :toxic :baton-pass :body-slam :double-edge :mimic :selfdestruct])

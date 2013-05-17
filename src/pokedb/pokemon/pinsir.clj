@@ -15,7 +15,7 @@
   :weight [55]
   :height [1.5])
 
-(deffamily :pinsir)
+(deffamily (familychain :pinsir))
 
 (deflearnset :rb
   :pinsir [:bide :bind :body-slam :cut :double-edge :double-team :focus-energy :guillotine :harden :hyper-beam :mimic :rage :rest :seismic-toss :slash :strength :submission :substitute :swords-dance :take-down :toxic :vicegrip])

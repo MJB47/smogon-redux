@@ -13,7 +13,7 @@
   :weight [175]
   :height [1.8])
 
-(deffamily :regice)
+(deffamily (familychain :regice))
 
 (deflearnset :rs
   :regice [:amnesia :ancientpower :blizzard :body-slam :brick-break :counter :curse :defense-curl :double-edge :double-team :dynamicpunch :earthquake :endure :explosion :facade :focus-punch :frustration :hail :hidden-power :hyper-beam :ice-beam :ice-punch :icy-wind :lock-on :mega-kick :mega-punch :mimic :mud-slap :protect :psych-up :rain-dance :rest :return :rock-slide :rock-smash :rollout :safeguard :secret-power :seismic-toss :selfdestruct :shock-wave :sleep-talk :snore :strength :substitute :superpower :swagger :thunder :thunder-wave :thunderbolt :thunderpunch :toxic :zap-cannon :body-slam :double-edge :mimic :seismic-toss :selfdestruct])
