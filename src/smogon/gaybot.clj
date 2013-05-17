@@ -35,15 +35,23 @@
 	[conn dest msg]
 	(write conn (str "PRIVMSG " dest " :" msg)))
 
+; (defn gen-filter
+; 	[func gen]
+; 	(if (nil? gen)
+; 		(map first (filter #(contains? (second %) :bw) (func)))
+; 		(map first (filter #(contains? (second %) (keyword gen)) (func)))))
+
 (defn data
 	"returns a bunch of useful information about a pokemon"
-	[poke]
-	(let [kpoke (keyword poke)]
+	[poke gen]
+	(let [kpoke (keyword poke)
+				kgen (if (nil? gen) :bw (keyword gen))]
 	(if (dex/pokemon? kpoke)
-		(str (clojure.string/capitalize poke) ": Typing: " (dex/type-of kpoke) " | Abilities: " 
-			(dex/abilities-of kpoke) " | Stats: " (dex/hp-of kpoke) "/" 
-			(dex/atk-of kpoke) "/" (dex/def-of kpoke) "/" (dex/spatk-of kpoke) 
-			"/" (dex/spdef-of kpoke) "/" (dex/speed-of kpoke)) 
+		(str (clojure.string/capitalize poke) ": Typing: " (dex/in-gen kgen (dex/type-of kpoke)) " | Abilities: " 
+			(dex/in-gen kgen (dex/abilities-of kpoke)) " | Stats: " (dex/in-gen kgen (dex/hp-of kpoke)) "/" 
+			(dex/in-gen kgen (dex/atk-of kpoke)) "/" (dex/in-gen kgen (dex/def-of kpoke)) "/" 
+			(dex/in-gen kgen (dex/spatk-of kpoke)) "/" (dex/in-gen kgen (dex/spdef-of kpoke)) "/" 
+			(dex/in-gen kgen (dex/speed-of kpoke))) 
 		(str poke " is not a valid pokemon, did you forget to hyphenate? (-)"))))
 
 (defn learn 
@@ -65,7 +73,7 @@
 		(= "?hello" pmsg)
 		(message conn chan "sup")
 		(= "?data" (nth smsg 0 nil))
-		(message conn chan (data (nth smsg 1 nil)))
+		(message conn chan (data (nth smsg 1 nil) (nth smsg 2 nil)))
 		(= "?learn" (nth smsg 0 nil))
 		(message conn chan (learn (nth smsg 1 nil) (nth smsg 2 nil))))))
 
