@@ -13,7 +13,7 @@
   :weight [168]
   :height [1])
 
-(deffamily :lunatone)
+(deffamily (familychain :lunatone))
 
 (deflearnset :rs
   :lunatone [:body-slam :calm-mind :confusion :cosmic-power :defense-curl :double-edge :double-team :dream-eater :earthquake :endure :explosion :facade :flash :frustration :future-sight :harden :hidden-power :hyper-beam :hypnosis :ice-beam :light-screen :mimic :protect :psych-up :psychic :psywave :rain-dance :reflect :rest :return :rock-slide :rock-throw :rock-tomb :rollout :safeguard :sandstorm :secret-power :selfdestruct :shadow-ball :skill-swap :sleep-talk :snore :substitute :swagger :swift :tackle :toxic :baton-pass :body-slam :double-edge :mimic :selfdestruct :substitute :swagger])

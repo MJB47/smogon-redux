@@ -13,7 +13,7 @@
   :weight [17.7]
   :height [0.7])
 
-(deffamily :volbeat)
+(deffamily (familychain :volbeat))
 
 (deflearnset :rs
   :volbeat [:aerial-ace :attract :baton-pass :body-slam :brick-break :confuse-ray :counter :double-edge :double-team :dynamicpunch :endure :facade :flash :focus-punch :frustration :giga-drain :helping-hand :hidden-power :ice-punch :light-screen :mega-kick :mega-punch :metronome :mimic :moonlight :mud-slap :protect :psych-up :quick-attack :rain-dance :rest :return :secret-power :seismic-toss :shadow-ball :shock-wave :signal-beam :silver-wind :sleep-talk :snore :solarbeam :substitute :sunny-day :swagger :swift :tackle :tail-glow :thief :thunder :thunder-wave :thunderbolt :thunderpunch :toxic :trick :water-pulse :body-slam :mimic])

@@ -13,7 +13,7 @@
   :weight [352]
   :height [4.5])
 
-(deffamily :kyogre)
+(deffamily (familychain :kyogre))
 
 (deflearnset :rs
   :kyogre [:ancientpower :blizzard :body-slam :brick-break :calm-mind :defense-curl :dive :double-edge :double-team :earthquake :endure :facade :frustration :hail :hidden-power :hydro-pump :hyper-beam :ice-beam :icy-wind :mimic :mud-slap :protect :psych-up :rain-dance :rest :return :roar :rock-slide :rock-smash :rock-tomb :safeguard :scary-face :secret-power :sheer-cold :shock-wave :sleep-talk :snore :strength :substitute :surf :swagger :swift :thunder :thunder-wave :thunderbolt :toxic :water-pulse :water-spout :waterfall :icy-wind :mimic])

@@ -14,7 +14,7 @@
   :weight [4]
   :height [0.4])
 
-(deffamily :mew)
+(deffamily (familychain :mew))
 
 (deflearnset :rb
   :mew [:bide :blizzard :body-slam :bubblebeam :counter :cut :dig :double-edge :double-team :dragon-rage :dream-eater :earthquake :egg-bomb :explosion :fire-blast :fissure :flash :fly :horn-drill :hyper-beam :ice-beam :mega-drain :mega-kick :mega-punch :metronome :mimic :pay-day :pound :psychic :psywave :rage :razor-wind :reflect :rest :rock-slide :seismic-toss :selfdestruct :skull-bash :sky-attack :softboiled :solarbeam :strength :submission :substitute :surf :swift :swords-dance :take-down :teleport :thunder :thunder-wave :thunderbolt :toxic :transform :tri-attack :water-gun :whirlwind])

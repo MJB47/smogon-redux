@@ -5,7 +5,7 @@
             [smogon.dex :as dex]
             [clojure.string :as s]))
 
-(defn render-gen [g]
+(defn render-ogen [g]
   (case g
     :rb "RB"
     :gs "GS"
@@ -30,19 +30,24 @@
 
 (defn render-diff
   [f diffs]
-  [:div (for [[v gens] diffs] [:div (interpose "," (map #(render-gen %) gens)) " " (f v)])])
+  [:div (for [[v gens] diffs] [:div (interpose "," (map #(render-ogen %) gens)) " " (f v)])])
+
+(defn render-relative
+  [f xgs]
+  (let [[x xgs] (dex/relative-to-gen :bw xgs)]
+    [:div (f x) (render-diff f xgs)]))
 
 (defn render-pokemon-row [p gens]
   [:tr
-   [:td (dex/name-of p) [:br] (s/join "," (map render-gen gens))]
-   [:td (render-diff render-types (dex/type-of p))]
+   [:td (dex/name-of p) [:br] (s/join "," (map render-ogen gens))]
+   [:td (render-relative render-types (dex/type-of p))]
    [:td (render-diff render-ability (dex/abilities-of p))]
-   [:td (render-diff render-stat (dex/hp-of p))] 
-   [:td (render-diff render-stat (dex/atk-of p))]
-   [:td (render-diff render-stat (dex/def-of p))]
-   [:td (render-diff render-stat (dex/spatk-of p))]
-   [:td (render-diff render-stat (dex/spdef-of p))]
-   [:td (render-diff render-stat (dex/speed-of p))]])
+   [:td (render-relative render-stat (dex/hp-of p))] 
+   [:td (render-relative render-stat (dex/atk-of p))]
+   [:td (render-relative render-stat (dex/def-of p))]
+   [:td (render-relative render-stat (dex/spatk-of p))]
+   [:td (render-relative render-stat (dex/spdef-of p))]
+   [:td (render-relative render-stat (dex/speed-of p))]])
 
 (defn list-pokemon
   [pokegens]

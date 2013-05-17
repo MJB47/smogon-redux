@@ -13,7 +13,7 @@
   :weight [4.2]
   :height [0.4])
 
-(deffamily :plusle)
+(deffamily (familychain :plusle))
 
 (deflearnset :rs
   :plusle [:agility :attract :baton-pass :body-slam :charge :counter :defense-curl :double-edge :double-team :dynamicpunch :encore :endure :facade :fake-tears :flash :frustration :growl :helping-hand :hidden-power :iron-tail :light-screen :mega-kick :mega-punch :metronome :mimic :mud-slap :protect :quick-attack :rain-dance :rest :return :rollout :secret-power :seismic-toss :shock-wave :sleep-talk :snore :spark :substitute :swagger :swift :thunder :thunder-wave :thunderbolt :thunderpunch :toxic :wish :body-slam :double-edge :mimic :seismic-toss])

@@ -14,7 +14,7 @@
   :weight [52.6]
   :height [1.6])
 
-(deffamily :zapdos)
+(deffamily (familychain :zapdos))
 
 (deflearnset :rb
   :zapdos [:agility :bide :double-edge :double-team :drill-peck :flash :fly :hyper-beam :light-screen :mimic :rage :razor-wind :reflect :rest :sky-attack :substitute :swift :take-down :thunder :thunder-wave :thunderbolt :thundershock :toxic :whirlwind])

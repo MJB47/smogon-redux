@@ -12,7 +12,7 @@
   :weight [16]
   :height [0.9])
 
-(deffamily :delibird)
+(deffamily (familychain :delibird))
 
 (deflearnset :gs
   :delibird [:attract :aurora-beam :blizzard :curse :detect :double-team :endure :fly :frustration :future-sight :headbutt :hidden-power :ice-beam :icy-wind :mud-slap :present :protect :quick-attack :rain-dance :rapid-spin :rest :return :sleep-talk :snore :splash :swagger :swift :thief :toxic])

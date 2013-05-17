@@ -12,7 +12,7 @@
   :weight [198]
   :height [2.1])
 
-(deffamily :entei)
+(deffamily (familychain :entei))
 
 (deflearnset :gs
   :entei [:bite :curse :cut :detect :dig :double-team :ember :endure :fire-blast :fire-spin :flamethrower :flash :frustration :headbutt :hidden-power :hyper-beam :iron-tail :leer :mud-slap :protect :psych-up :rain-dance :rest :return :roar :rock-smash :sandstorm :sleep-talk :snore :solarbeam :stomp :strength :sunny-day :swagger :swift :toxic])

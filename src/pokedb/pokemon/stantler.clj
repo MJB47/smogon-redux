@@ -14,7 +14,7 @@
   :weight [71.2]
   :height [1.4])
 
-(deffamily :stantler)
+(deffamily (familychain :stantler))
 
 (deflearnset :gs
   :stantler [:attract :bite :confuse-ray :curse :detect :disable :double-team :dream-eater :earthquake :endure :flash :frustration :headbutt :hidden-power :hypnosis :leer :light-screen :mud-slap :nightmare :protect :psych-up :psychic :rain-dance :reflect :rest :return :roar :sand-attack :sleep-talk :snore :spite :stomp :sunny-day :swagger :swift :tackle :take-down :thief :toxic])

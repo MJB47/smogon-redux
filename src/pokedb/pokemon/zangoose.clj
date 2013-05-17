@@ -13,7 +13,7 @@
   :weight [40.3]
   :height [1.3])
 
-(deffamily :zangoose)
+(deffamily (familychain :zangoose))
 
 (deflearnset :rs
   :zangoose [:aerial-ace :attract :blizzard :body-slam :brick-break :counter :crush-claw :curse :defense-curl :detect :dig :double-edge :double-kick :double-team :dynamicpunch :endure :facade :false-swipe :fire-blast :fire-punch :flail :flamethrower :focus-punch :frustration :fury-cutter :giga-drain :hidden-power :ice-beam :ice-punch :icy-wind :iron-tail :leer :mega-kick :mega-punch :mimic :mud-slap :protect :pursuit :quick-attack :rain-dance :razor-wind :rest :return :roar :rock-slide :rock-smash :rollout :scratch :secret-power :seismic-toss :shadow-ball :shock-wave :slash :sleep-talk :snore :solarbeam :strength :substitute :sunny-day :swagger :swift :swords-dance :taunt :thief :thunder :thunder-wave :thunderbolt :thunderpunch :toxic :water-pulse :body-slam :double-edge :icy-wind :mimic :refresh :seismic-toss :thunder-wave])

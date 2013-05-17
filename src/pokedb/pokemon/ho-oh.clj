@@ -13,7 +13,7 @@
   :weight [199]
   :height [3.8])
 
-(deffamily :ho-oh)
+(deffamily (familychain :ho-oh))
 
 (deflearnset :gs
   :ho-oh [:ancientpower :curse :detect :double-team :dragonbreath :dream-eater :earthquake :endure :fire-blast :flamethrower :flash :fly :frustration :future-sight :giga-drain :gust :hidden-power :hyper-beam :mud-slap :nightmare :protect :psych-up :psychic :rain-dance :recover :rest :return :roar :rock-smash :sacred-fire :safeguard :sandstorm :shadow-ball :sleep-talk :snore :solarbeam :steel-wing :strength :sunny-day :swagger :swift :thunder :thunderbolt :toxic :whirlwind :zap-cannon])

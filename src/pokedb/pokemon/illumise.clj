@@ -14,7 +14,7 @@
   :weight [17.7]
   :height [0.6])
 
-(deffamily :illumise)
+(deffamily (familychain :illumise))
 
 (deflearnset :rs
   :illumise [:aerial-ace :attract :baton-pass :body-slam :brick-break :charm :counter :covet :double-edge :double-team :dynamicpunch :encore :endure :facade :flash :flatter :focus-punch :frustration :giga-drain :growth :helping-hand :hidden-power :ice-punch :light-screen :mega-kick :mega-punch :metronome :mimic :moonlight :mud-slap :protect :psych-up :quick-attack :rain-dance :rest :return :secret-power :seismic-toss :shadow-ball :shock-wave :silver-wind :sleep-talk :snore :solarbeam :substitute :sunny-day :swagger :sweet-scent :swift :tackle :thief :thunder :thunder-wave :thunderbolt :thunderpunch :toxic :water-pulse :wish :body-slam :double-edge :mimic :seismic-toss])

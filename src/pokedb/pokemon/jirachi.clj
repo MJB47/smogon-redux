@@ -12,7 +12,7 @@
   :weight [1.1]
   :height [0.3])
 
-(deffamily :jirachi)
+(deffamily (familychain :jirachi))
 
 (deflearnset :rs
   :jirachi [:aerial-ace :body-slam :calm-mind :confusion :cosmic-power :defense-curl :doom-desire :double-edge :double-team :dream-eater :dynamicpunch :endure :facade :fire-punch :flash :frustration :future-sight :helping-hand :hidden-power :hyper-beam :ice-punch :icy-wind :light-screen :metronome :mimic :mud-slap :nightmare :protect :psych-up :psychic :rain-dance :reflect :refresh :rest :return :safeguard :sandstorm :secret-power :shadow-ball :shock-wave :skill-swap :sleep-talk :snore :substitute :sunny-day :swagger :swift :thunder :thunder-wave :thunderbolt :thunderpunch :toxic :water-pulse :wish :body-slam :icy-wind :mimic :nightmare :thunder-wave])

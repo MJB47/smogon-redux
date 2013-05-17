@@ -14,7 +14,7 @@
   :weight [11]
   :height [0.5])
 
-(deffamily :sableye)
+(deffamily (familychain :sableye))
 
 (deflearnset :rs
   :sableye [:aerial-ace :astonish :attract :body-slam :brick-break :calm-mind :confuse-ray :counter :cut :detect :dig :double-edge :double-team :dream-eater :dynamicpunch :endure :facade :faint-attack :fake-out :fire-punch :flash :focus-punch :foresight :frustration :fury-cutter :fury-swipes :hidden-power :ice-punch :knock-off :leer :mean-look :mega-kick :mega-punch :metronome :mimic :moonlight :mud-slap :night-shade :nightmare :protect :psych-up :psychic :rain-dance :recover :rest :return :rock-smash :rock-tomb :scratch :secret-power :seismic-toss :shadow-ball :shock-wave :sleep-talk :snatch :snore :substitute :sunny-day :swagger :taunt :thief :thunderpunch :torment :toxic :water-pulse :body-slam :double-edge :helping-hand :mimic :nightmare :seismic-toss :substitute])

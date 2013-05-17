@@ -13,7 +13,7 @@
   :weight [22]
   :height [1])
 
-(deffamily :kecleon)
+(deffamily (familychain :kecleon))
 
 (deflearnset :rs
   :kecleon [:aerial-ace :ancientpower :astonish :attract :bind :blizzard :body-slam :brick-break :counter :cut :defense-curl :dig :disable :double-edge :double-team :dynamicpunch :endure :facade :faint-attack :fire-blast :fire-punch :flamethrower :flash :focus-punch :frustration :fury-cutter :fury-swipes :hidden-power :ice-beam :ice-punch :icy-wind :iron-tail :lick :magic-coat :mega-kick :mega-punch :metronome :mimic :mud-slap :protect :psybeam :psych-up :rain-dance :rest :return :rock-slide :rock-smash :rock-tomb :rollout :scratch :screech :secret-power :seismic-toss :shadow-ball :shock-wave :skill-swap :slash :sleep-talk :snatch :snore :solarbeam :strength :substitute :sunny-day :swagger :swift :tail-whip :thief :thunder :thunder-wave :thunderbolt :thunderpunch :toxic :trick :water-pulse :body-slam :double-edge :icy-wind :mimic :seismic-toss])

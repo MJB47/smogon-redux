@@ -13,7 +13,7 @@
   :weight [950]
   :height [3.5])
 
-(deffamily :groudon)
+(deffamily (familychain :groudon))
 
 (deflearnset :rs
   :groudon [:aerial-ace :ancientpower :body-slam :brick-break :bulk-up :counter :cut :defense-curl :dig :double-edge :double-team :dragon-claw :dynamicpunch :earthquake :endure :eruption :facade :fire-blast :fire-punch :fissure :flamethrower :frustration :fury-cutter :hidden-power :hyper-beam :iron-tail :mega-kick :mega-punch :mimic :mud-shot :mud-slap :overheat :protect :psych-up :rest :return :roar :rock-slide :rock-smash :rock-tomb :rollout :safeguard :sandstorm :scary-face :secret-power :seismic-toss :shock-wave :slash :sleep-talk :snore :solarbeam :strength :substitute :sunny-day :swagger :swift :swords-dance :thunder :thunder-wave :thunderbolt :thunderpunch :toxic :body-slam :double-edge :mimic :seismic-toss])

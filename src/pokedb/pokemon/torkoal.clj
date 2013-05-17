@@ -13,7 +13,7 @@
   :weight [80.4]
   :height [0.5])
 
-(deffamily :torkoal)
+(deffamily (familychain :torkoal))
 
 (deflearnset :rs
   :torkoal [:amnesia :attract :body-slam :curse :double-edge :double-team :ember :endure :eruption :explosion :facade :fire-blast :fire-spin :flail :flamethrower :frustration :heat-wave :hidden-power :iron-defense :iron-tail :mimic :mud-slap :overheat :protect :rest :return :rock-slide :rock-smash :secret-power :selfdestruct :sleep-talk :sludge-bomb :smog :smokescreen :snore :strength :substitute :sunny-day :swagger :toxic :yawn :double-edge :mimic :selfdestruct])

@@ -13,7 +13,7 @@
   :weight [54]
   :height [1.5])
 
-(deffamily :heracross)
+(deffamily (familychain :heracross))
 
 (deflearnset :gs
   :heracross [:attract :bide :counter :curse :cut :detect :double-team :earthquake :endure :flail :frustration :fury-attack :fury-cutter :harden :headbutt :hidden-power :horn-attack :leer :megahorn :protect :rest :return :reversal :rock-smash :sleep-talk :snore :strength :sunny-day :swagger :tackle :take-down :thief :toxic])
