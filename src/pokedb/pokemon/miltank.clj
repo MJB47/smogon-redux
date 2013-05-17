@@ -14,7 +14,7 @@
   :weight [75.5]
   :height [1.2])
 
-(deffamily :miltank)
+(deffamily (familychain :miltank))
 
 (deflearnset :gs
   :miltank [:attract :bide :blizzard :body-slam :curse :defense-curl :double-team :dynamicpunch :earthquake :endure :fire-punch :frustration :growl :headbutt :heal-bell :hidden-power :hyper-beam :ice-beam :ice-punch :icy-wind :iron-tail :milk-drink :mud-slap :present :protect :psych-up :rain-dance :rest :return :reversal :rock-smash :rollout :sandstorm :seismic-toss :shadow-ball :sleep-talk :snore :stomp :strength :sunny-day :surf :swagger :sweet-scent :tackle :thunder :thunderbolt :thunderpunch :toxic :zap-cannon])

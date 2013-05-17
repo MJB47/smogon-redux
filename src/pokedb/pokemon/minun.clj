@@ -13,7 +13,7 @@
   :weight [4.2]
   :height [0.4])
 
-(deffamily :minun)
+(deffamily (familychain :minun))
 
 (deflearnset :rs
   :minun [:agility :attract :baton-pass :body-slam :charge :charm :counter :defense-curl :double-edge :double-team :dynamicpunch :encore :endure :facade :flash :frustration :growl :helping-hand :hidden-power :iron-tail :light-screen :mega-kick :mega-punch :metronome :mimic :mud-slap :protect :quick-attack :rain-dance :rest :return :rollout :secret-power :seismic-toss :shock-wave :sleep-talk :snore :spark :substitute :swagger :swift :thunder :thunder-wave :thunderbolt :thunderpunch :toxic :wish :body-slam :double-edge :mimic :seismic-toss])

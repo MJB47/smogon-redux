@@ -13,7 +13,7 @@
   :weight [52.5]
   :height [2.7])
 
-(deffamily :seviper)
+(deffamily (familychain :seviper))
 
 (deflearnset :rs
   :seviper [:attract :bite :body-slam :crunch :dig :double-edge :double-team :earthquake :endure :facade :flamethrower :frustration :fury-cutter :giga-drain :glare :haze :hidden-power :iron-tail :lick :mimic :mud-slap :poison-fang :poison-tail :protect :rain-dance :rest :return :rock-smash :screech :secret-power :sleep-talk :sludge-bomb :snatch :snore :spit-up :stockpile :strength :substitute :sunny-day :swagger :swallow :swift :taunt :thief :toxic :wrap :double-edge :mimic])

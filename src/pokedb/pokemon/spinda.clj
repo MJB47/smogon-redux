@@ -14,7 +14,7 @@
   :weight [5]
   :height [1.1])
 
-(deffamily :spinda)
+(deffamily (familychain :spinda))
 
 (deflearnset :rs
   :spinda [:assist :attract :baton-pass :body-slam :brick-break :calm-mind :counter :defense-curl :dig :disable :dizzy-punch :double-edge :double-team :dream-eater :dynamicpunch :encore :endure :facade :faint-attack :fire-punch :flail :flash :focus-punch :frustration :hidden-power :hypnosis :ice-punch :icy-wind :mega-kick :mega-punch :metronome :mimic :mud-slap :nightmare :protect :psybeam :psych-up :psychic :rain-dance :rest :return :rock-slide :rock-smash :rock-tomb :rollout :safeguard :secret-power :seismic-toss :shadow-ball :shock-wave :skill-swap :sleep-talk :smellingsalt :snatch :snore :strength :substitute :sunny-day :swagger :swift :tackle :teeter-dance :thief :thrash :thunderpunch :toxic :trick :uproar :water-pulse :wish :body-slam :icy-wind :mimic :seismic-toss])

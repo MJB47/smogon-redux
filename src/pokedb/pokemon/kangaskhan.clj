@@ -15,7 +15,7 @@
   :weight [80]
   :height [2.2])
 
-(deffamily :kangaskhan)
+(deffamily (familychain :kangaskhan))
 
 (deflearnset :rb
   :kangaskhan [:bide :bite :blizzard :body-slam :bubblebeam :comet-punch :counter :dizzy-punch :double-edge :double-team :earthquake :fire-blast :fissure :hyper-beam :ice-beam :leer :mega-kick :mega-punch :mimic :rage :rest :rock-slide :seismic-toss :skull-bash :strength :submission :substitute :surf :tail-whip :take-down :thunder :thunderbolt :toxic :water-gun])

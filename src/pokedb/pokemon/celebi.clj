@@ -12,7 +12,7 @@
   :weight [5]
   :height [0.6])
 
-(deffamily :celebi)
+(deffamily (familychain :celebi))
 
 (deflearnset :gs
   :celebi [:ancientpower :baton-pass :confusion :curse :defense-curl :detect :double-team :dream-eater :endure :flash :frustration :future-sight :giga-drain :heal-bell :hidden-power :hyper-beam :leech-seed :mud-slap :nightmare :perish-song :protect :psych-up :psychic :rain-dance :recover :rest :return :safeguard :sandstorm :shadow-ball :sleep-talk :snore :solarbeam :sunny-day :swagger :sweet-scent :swift :toxic])

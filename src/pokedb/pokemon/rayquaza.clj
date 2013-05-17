@@ -12,7 +12,7 @@
   :weight [206.5]
   :height [7])
 
-(deffamily :rayquaza)
+(deffamily (familychain :rayquaza))
 
 (deflearnset :rs
   :rayquaza [:aerial-ace :ancientpower :blizzard :body-slam :brick-break :bulk-up :crunch :dive :double-edge :double-team :dragon-claw :dragon-dance :earthquake :endure :extremespeed :facade :fire-blast :flamethrower :fly :frustration :fury-cutter :hidden-power :hyper-beam :ice-beam :icy-wind :iron-tail :mimic :mud-slap :outrage :overheat :protect :psych-up :rain-dance :rest :return :roar :rock-slide :rock-smash :sandstorm :scary-face :secret-power :shock-wave :sleep-talk :snore :solarbeam :strength :substitute :sunny-day :surf :swagger :swift :thunder :thunder-wave :thunderbolt :toxic :twister :water-pulse :waterfall :body-slam :double-edge :icy-wind :mimic])

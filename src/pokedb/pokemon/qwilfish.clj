@@ -13,7 +13,7 @@
   :weight [3.9]
   :height [0.5])
 
-(deffamily :qwilfish)
+(deffamily (familychain :qwilfish))
 
 (deflearnset :gs
   :qwilfish [:attract :blizzard :bubblebeam :curse :defense-curl :double-team :endure :flail :frustration :harden :haze :headbutt :hidden-power :hydro-pump :ice-beam :icy-wind :minimize :pin-missile :poison-sting :protect :rain-dance :rest :return :rollout :sleep-talk :sludge-bomb :snore :spikes :supersonic :surf :swagger :swift :tackle :take-down :toxic :water-gun :waterfall :whirlpool])

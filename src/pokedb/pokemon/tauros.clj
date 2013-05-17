@@ -15,7 +15,7 @@
   :weight [88.4]
   :height [1.4])
 
-(deffamily :tauros)
+(deffamily (familychain :tauros))
 
 (deflearnset :rb
   :tauros [:bide :blizzard :body-slam :double-edge :double-team :earthquake :fire-blast :fissure :horn-drill :hyper-beam :ice-beam :leer :mimic :rage :rest :skull-bash :stomp :strength :substitute :tackle :tail-whip :take-down :thunder :thunderbolt :toxic])

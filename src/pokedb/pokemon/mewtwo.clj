@@ -13,7 +13,7 @@
   :weight [122]
   :height [2])
 
-(deffamily :mewtwo)
+(deffamily (familychain :mewtwo))
 
 (deflearnset :rb
   :mewtwo [:amnesia :barrier :bide :blizzard :body-slam :bubblebeam :confusion :counter :disable :double-edge :double-team :fire-blast :flash :hyper-beam :ice-beam :mega-kick :mega-punch :metronome :mimic :mist :pay-day :psychic :psywave :rage :recover :reflect :rest :seismic-toss :selfdestruct :skull-bash :solarbeam :strength :submission :substitute :swift :take-down :teleport :thunder :thunder-wave :thunderbolt :toxic :tri-attack :water-gun])

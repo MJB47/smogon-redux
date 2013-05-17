@@ -14,7 +14,7 @@
   :weight [59]
   :height [1.8])
 
-(deffamily :aerodactyl)
+(deffamily (familychain (familychain :aerodactyl)))
 
 (deflearnset :rb
   :aerodactyl [:agility :bide :bite :double-edge :double-team :dragon-rage :fire-blast :fly :hyper-beam :mimic :rage :razor-wind :reflect :rest :sky-attack :substitute :supersonic :swift :take-down :toxic :whirlwind :wing-attack])

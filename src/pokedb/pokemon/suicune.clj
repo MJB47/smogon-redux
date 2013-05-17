@@ -12,7 +12,7 @@
   :weight [187]
   :height [2])
 
-(deffamily :suicune)
+(deffamily (familychain :suicune))
 
 (deflearnset :gs
   :suicune [:aurora-beam :bite :blizzard :bubblebeam :curse :cut :detect :dig :double-team :endure :frustration :gust :headbutt :hidden-power :hydro-pump :hyper-beam :ice-beam :icy-wind :iron-tail :leer :mirror-coat :mist :mud-slap :protect :psych-up :rain-dance :rest :return :roar :rock-smash :sandstorm :sleep-talk :snore :sunny-day :surf :swagger :swift :toxic :water-gun :waterfall :whirlpool])

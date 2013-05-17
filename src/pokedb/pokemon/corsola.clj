@@ -12,7 +12,7 @@
   :weight [5]
   :height [0.6])
 
-(deffamily :corsola)
+(deffamily (familychain :corsola))
 
 (deflearnset :gs
   :corsola [:amnesia :ancientpower :attract :bubble :bubblebeam :curse :defense-curl :double-team :earthquake :endure :frustration :harden :headbutt :hidden-power :ice-beam :mirror-coat :mist :mud-slap :protect :psychic :rain-dance :recover :rest :return :rock-slide :rock-smash :rollout :safeguard :sandstorm :screech :sleep-talk :snore :spike-cannon :strength :sunny-day :surf :swagger :tackle :toxic :whirlpool])

@@ -13,7 +13,7 @@
   :weight [41.5]
   :height [1.5])
 
-(deffamily :girafarig)
+(deffamily (familychain :girafarig))
 
 (deflearnset :gs
   :girafarig [:agility :amnesia :attract :baton-pass :beat-up :confusion :crunch :curse :double-team :dream-eater :earthquake :endure :foresight :frustration :future-sight :growl :headbutt :hidden-power :iron-tail :mud-slap :nightmare :protect :psybeam :psych-up :psychic :rest :return :rock-smash :shadow-ball :sleep-talk :snore :stomp :strength :sunny-day :swagger :swift :tackle :take-down :thief :thunder :thunderbolt :toxic :zap-cannon])

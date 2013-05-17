@@ -13,7 +13,7 @@
   :weight [55.4]
   :height [1.7])
 
-(deffamily :articuno)
+(deffamily (familychain :articuno))
 
 (deflearnset :rb
   :articuno [:agility :bide :blizzard :bubblebeam :double-edge :double-team :fly :hyper-beam :ice-beam :mimic :mist :peck :rage :razor-wind :reflect :rest :sky-attack :substitute :swift :take-down :toxic :water-gun :whirlwind])

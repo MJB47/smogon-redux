@@ -13,7 +13,7 @@
   :weight [15]
   :height [0.8])
 
-(deffamily :farfetchd)
+(deffamily (familychain :farfetchd))
 
 (deflearnset :rb
   :farfetchd [:agility :bide :body-slam :cut :double-edge :double-team :fly :fury-attack :leer :mimic :peck :rage :razor-wind :reflect :rest :sand-attack :skull-bash :slash :substitute :swift :swords-dance :take-down :toxic :whirlwind :fury-cutter])

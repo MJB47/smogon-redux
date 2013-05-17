@@ -14,7 +14,7 @@
   :weight [100]
   :height [2])
 
-(deffamily :tropius)
+(deffamily (familychain :tropius))
 
 (deflearnset :rs
   :tropius [:aerial-ace :attract :body-slam :bullet-seed :cut :double-edge :double-team :earthquake :endure :facade :flash :fly :frustration :fury-cutter :giga-drain :growth :gust :headbutt :hidden-power :hyper-beam :leech-seed :leer :magical-leaf :mimic :mud-slap :nature-power :protect :razor-leaf :razor-wind :rest :return :roar :rock-smash :safeguard :secret-power :slam :sleep-talk :snore :solarbeam :steel-wing :stomp :strength :substitute :sunny-day :swagger :sweet-scent :swords-dance :synthesis :toxic :whirlwind :double-edge])

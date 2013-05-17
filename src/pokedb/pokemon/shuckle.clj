@@ -14,7 +14,7 @@
   :weight [20.5]
   :height [0.6])
 
-(deffamily :shuckle)
+(deffamily (familychain :shuckle))
 
 (deflearnset :gs
   :shuckle [:attract :bide :constrict :curse :defense-curl :dig :double-team :earthquake :encore :endure :flash :frustration :headbutt :hidden-power :mud-slap :protect :rest :return :rock-smash :rollout :safeguard :sandstorm :sleep-talk :sludge-bomb :snore :strength :sunny-day :swagger :sweet-scent :toxic :withdraw :wrap])

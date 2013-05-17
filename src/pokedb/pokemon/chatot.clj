@@ -12,7 +12,7 @@
   :weight [1.9]
   :height [0.5])
 
-(deffamily :chatot)
+(deffamily (familychain :chatot))
 
 (deflearnset :dp
   :chatot [:aerial-ace :agility :air-cutter :attract :captivate :chatter :defog :double-team :encore :endure :facade :featherdance :fly :frustration :fury-attack :growl :heat-wave :hidden-power :hyper-voice :mimic :mirror-move :mud-slap :nasty-plot :natural-gift :night-shade :ominous-wind :peck :pluck :protect :rain-dance :rest :return :role-play :roost :secret-power :sing :sky-attack :sleep-talk :snore :steel-wing :substitute :sunny-day :supersonic :swagger :swift :tailwind :taunt :thief :torment :toxic :twister :u-turn :uproar])

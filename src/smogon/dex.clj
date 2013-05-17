@@ -37,57 +37,20 @@
   [gens]
   (into {} (map-indexed #(vector %2 %1) gens)))
 
-(defn gens-since
+(defn ogens-since
   [gen]
   (drop-while #(not= gen %) official-gens))
 
-(defn gens-upto
+(defn ogens-upto
   [gen]
   (take-while #(not= gen %) official-gens))
-
-(defn sort-grouped-gens
-  [gen-ordering valgens]
-  (sort-by (fn [[val gs]]
-             (reduce min (map (gens->ordering gen-ordering) gs)))
-           valgens))
-
-(defn ^:private fill-gens
-  "(fill-gens [:gs :rs :dp :bw] {:gs [:ice :grass], :dp [:fire]}) 
-     --> 
-   {:gs [:ice :grass], :rs [:ice grass], :dp [:fire], :bw [:fire]}"
-  [[prev-gen & [gen :as next-gens]] gen-map]
-  (cond
-    (nil? gen) gen-map
-
-    :else
-    (let [;; Get the value from the previous generation,
-          prev (get gen-map prev-gen)
-          ;; ... and carry it over to the current generation (if the current
-          ;; generation has no set value--merge works left to right)
-          gen-map' (merge {gen prev} gen-map)]
-      (fill-gens next-gens gen-map'))))
-
-(defn make-generational
-  "(make-generational :gs [[:ice :grass] :dp [:fire]] 
-     --> 
-   {:gs [:ice :grass], :rs [:ice grass], :dp [:fire], :bw [:fire]}"
-  [begin-gen [v & {:as overrides}]]
-  (let [gen-map (merge overrides {begin-gen v})
-        gens (gens-since begin-gen)] 
-    (fill-gens gens gen-map)))
-
-;; Relations
-;;
-
-(defmacro defgenrel [name & args]
-  `(lhacks/defrel ~name ^:index g# ~@args))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Types
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defgenrel type-r ^:index t)
-(defgenrel type-effective-against-r ^:index t1 ^:index t2 modifier)
+(lhacks/defrel type-r ^:index g ^:index t)
+(lhacks/defrel type-effective-against-r ^:index g ^:index t1 ^:index t2 modifier)
 
 (defn type?
   ([t]
@@ -102,7 +65,7 @@
 ;; Moves
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defgenrel move-r ^:index m)
+(lhacks/defrel move-r ^:index g ^:index m)
 
 (defn move?
   ([m]
@@ -117,7 +80,7 @@
 ;; Abilities
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defgenrel ability-r ^:index a)
+(lhacks/defrel ability-r ^:index g ^:index a)
 
 (defn ability?
   ([a]
@@ -132,7 +95,7 @@
 ;; Items
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defgenrel item-r i)
+(lhacks/defrel item-r ^:index g i)
 
 (defn item?
   ([i]
@@ -146,18 +109,18 @@
 
 (def official-gens-without-abilities #{:rb :gs})
 
-(defgenrel pokemon-r ^:index x)
-(defgenrel pokemon-type-r ^:index p ^:index x)
-(defgenrel pokemon-ability-r ^:index p ^:index x)
-(defgenrel pokemon-egggroup-r ^:index p ^:index x)
-(defgenrel pokemon-hp-r ^:index p x)
-(defgenrel pokemon-atk-r ^:index p x)
-(defgenrel pokemon-def-r ^:index p x)
-(defgenrel pokemon-spatk-r ^:index p x)
-(defgenrel pokemon-spdef-r ^:index p x)
-(defgenrel pokemon-speed-r ^:index p x)
-(defgenrel pokemon-weight-r ^:index p x)
-(defgenrel pokemon-height-r ^:index p x)
+(lhacks/defrel pokemon-r ^:index g ^:index x)
+(lhacks/defrel pokemon-type-r ^:index g ^:index p ^:index x)
+(lhacks/defrel pokemon-ability-r ^:index g ^:index p ^:index x)
+(lhacks/defrel pokemon-egggroup-r ^:index g ^:index p ^:index x)
+(lhacks/defrel pokemon-hp-r ^:index g ^:index p x)
+(lhacks/defrel pokemon-atk-r ^:index g ^:index p x)
+(lhacks/defrel pokemon-def-r ^:index g ^:index p x)
+(lhacks/defrel pokemon-spatk-r ^:index g ^:index p x)
+(lhacks/defrel pokemon-spdef-r ^:index g ^:index p x)
+(lhacks/defrel pokemon-speed-r ^:index g ^:index p x)
+(lhacks/defrel pokemon-weight-r ^:index g ^:index p x)
+(lhacks/defrel pokemon-height-r ^:index g ^:index p x)
 
 (defn pokemon?
   ([p]
@@ -283,7 +246,7 @@
 ;; Learnsets
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defgenrel learns-sans-preevos-r ^:index p ^:index m)
+(lhacks/defrel learns-sans-preevos-r ^:index g ^:index p ^:index m)
 
 (defn has-move [m]
   (util/group-keys (mapcat (fn [[g p]]
@@ -297,14 +260,77 @@
                       (preevos-of p))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Helpers
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn in-gen
+  "Given gen-summarized data, return only the entries valid in a specific gen."
+  [g xgs]
+  (let [xs (for [[x gs] xgs
+                 :when (contains? gs g)]
+             x)]
+    (if (= (count xs) 1)
+      (first xs)
+      xs)))
+
+(defn not-in-gen
+  "Given gen-summarized data, return only the entries invalid in a specific gen."
+  [g xgs]
+  (into {} (remove #(contains? (second %) g) xgs)))
+
+(defn relative-to-gen
+  [g xgs]
+  [(in-gen g xgs)
+   (not-in-gen g xgs)])
+
+(defn diff-gens
+  "Assuming the input \"stacks\" with each gen, we will give the diffs."
+  [xgs]
+  (->> xgs
+       (group-by second)
+       (map (fn [[gs xgs]] [gs (map first xgs)]))
+       (sort-by (fn [[gs xs]] (count xs)))
+       (reduce (fn [[gens-so-far gsxs] [gs xs]]
+                 [(set/union gs gens-so-far)
+                  (cons [(set/difference gs gens-so-far) xs] gsxs)])
+               ;; Initial state: no gens seen so far.
+               [#{} []])
+       second))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Definitions
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn ^:private fill-gens
+  "(fill-gens [:gs :rs :dp :bw] {:gs [:ice :grass], :dp [:fire]}) 
+     --> 
+   {:gs [:ice :grass], :rs [:ice grass], :dp [:fire], :bw [:fire]}"
+  [[prev-gen & [gen :as next-gens]] gen-map]
+  (cond
+    (nil? gen) gen-map
+
+    :else
+    (let [;; Get the value from the previous generation,
+          prev (get gen-map prev-gen)
+          ;; ... and carry it over to the current generation (if the current
+          ;; generation has no set value--merge works left to right)
+          gen-map' (merge {gen prev} gen-map)]
+      (fill-gens next-gens gen-map'))))
+
+(defn ^:private make-generational
+  "(make-generational :gs [[:ice :grass] :dp [:fire]] 
+     --> 
+   {:gs [:ice :grass], :rs [:ice grass], :dp [:fire], :bw [:fire]}"
+  [begin-gen [v & {:as overrides}]]
+  (let [gen-map (merge overrides {begin-gen v})
+        gens (ogens-since begin-gen)] 
+    (fill-gens gens gen-map)))
 
 (defn deftypechart
   [id & {name :name
          gen :introduced-in
          geffectives :effective-against}]
-  (doseq [g (gens-since gen)]
+  (doseq [g (ogens-since gen)]
     (l/fact type-r g id))
   (doseq [[g mods] (make-generational gen geffectives)
           [type mod] mods]
@@ -314,21 +340,21 @@
 (defn defmove
   [id & {name :name,
          gen :introduced-in}]
-  (doseq [g (gens-since gen)]
+  (doseq [g (ogens-since gen)]
     (l/fact move-r g id))
   (l/fact name-r id name))
 
 (defn defability
   [id & {name :name,
          gen :introduced-in}]
-  (doseq [g (gens-since gen)]
+  (doseq [g (ogens-since gen)]
     (l/fact ability-r g id))
   (l/fact name-r id name))
 
 (defn defitem
   [id & {name :name,
          gen :introduced-in}]
-  (doseq [g (gens-since gen)]
+  (doseq [g (ogens-since gen)]
     (l/fact item-r g id))
   (l/fact name-r id name))
 
@@ -342,7 +368,7 @@
          gegggroups :egggroups,
          gweight :weight,
          gheight :height}]
-  (doseq [g (gens-since gen)]
+  (doseq [g (ogens-since gen)]
     (l/fact pokemon-r g id))
   (l/fact name-r id name)
   (letfn [(mg [x] (make-generational gen x))]
@@ -384,35 +410,9 @@
           m ms]
     (l/fact learns-sans-preevos-r g p m)))
 
-(defn ^:private make-vector-if-not
-  "Take a wild guess."
-  [x] (if (vector? x) x [x]))
-
-(defn ^:private zip
-  "You know, like Python or Haskell."
-  [xs ys]
-  (map vector xs ys))
-
-(defn ^:private group-adjacent
-  "(group-adjacent '([:bulbasaur] [:ivysaur] [:venusaur])) -> 
-   '([:bulbasaur :ivysaur] [:ivysaur :venusaur])"
-  [ps]
-  (for [[palts pevoalts] (zip ps (rest ps))
-        p palts
-        pevo pevoalts]
-    [p pevo]))
-
-(defn ^:private family-tree->graph
-  [tree]
-  [(set (flatten tree))
-   (set (->> tree
-             ;; Ensure each element is a vector, b/c (deffamily :sneasel :weavile) is
-             ;; shorthand for (deffamily [:sneasel] [:weavile])
-             (map make-vector-if-not)
-             ;; We now have a sequence of vectors, where each vector represents
-             ;; alternatives.  Pair up adjacents, so '([:bulbasaur] [:ivysaur]
-             ;; [:venusaur]) -> '([:bulbasaur :ivysaur] [:ivysaur :venusaur])
-             group-adjacent))])
+(defn familymerge
+  [[n e] [n' e']]
+  [(set/union n n') (set/union e e')])
 
 (defn familyclique
   [& ps]
@@ -421,29 +421,21 @@
                        :when (not= p p')]
                    [p p']))])
 
-(defn deffamilygraph
+(defn familychain
+  [& ps]
+  [(set ps) (map vector ps (rest ps))])
+
+(defn familyalts
+  [f & ps]
+  (reduce familymerge (map f ps)))
+
+(defn deffamily
   [[nodes links]]
   (let [rep (first nodes)]
     (doseq [p nodes]
       (l/fact representative-r p rep))
     (doseq [[p pevo] links]
       (l/fact evolves-r p pevo))))
-
-(defn deffamily
- "Define a family tree. 
-
-  For example, (deffamily :bulbasaur :ivysaur :venusaur) creates evolution
-  relations between [:bulbasaur :ivysaur], [:ivysaur :venusaur] in every
-  generation. 
-
-  To specify different evolution paths, you may enclose alternatives in a
-  vector. For example, (deffamily :slowpoke [:slowbro :slowking]) creates
-  evolution relations between [:slowpoke, :slowbro] and [:slowpoke :slowking] in
-  every generation (sans the latter in :rb).
-
-  Pokemon that did not exist in a particular generation are ignored."
-  [& tree]
-  (deffamilygraph (family-tree->graph tree)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Dex server
