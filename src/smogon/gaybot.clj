@@ -82,6 +82,8 @@
 		(if-not (nil? (find (dex/has-move (keyword move)) (keyword poke))) 
 			(str (clojure.string/capitalize poke) " DOES learn the move: " (clojure.string/capitalize move)) 
 			(str (clojure.string/capitalize poke) " DOES NOT learn the move: " (clojure.string/capitalize move)))
+			(str (capitalize poke) " DOES learn the move: " (capitalize move)) 
+			(str (capitalize poke) " DOES NOT learn the move: " (capitalize move)))
 		(str "Not a valid pokemon or move (or both!). Did you forget to hypenate? (-)")))
 
 ; need to return: Channel, Sender, Login, Hostname, Message
@@ -90,6 +92,9 @@
   (let [chan (nth (clojure.string/split msg #"\s+") 2)
 				privmsg (nth (clojure.string/split msg #":+" 3) 2 nil)
 				smsg (clojure.string/split privmsg #"\s")]
+  (let [chan (nth (split msg #"\s+") 2)
+				privmsg (nth (split msg #":+" 3) 2 nil)
+				smsg (split privmsg #"\s")]
 	(cond 
 		(= "?hello" privmsg)
 		(message conn chan "sup")
@@ -116,9 +121,14 @@
 				(= (nth (clojure.string/split msg #"\s+") 1) "001")
 				(join-chan conn "#penis,#qwert")
 				(= (nth (clojure.string/split msg #"\s+") 1) "PRIVMSG") 
+				(= (nth (split msg #"\s+") 1) "001")
+				(join-chan conn "#qwert")
+				(= (nth (split msg #"\s+") 1) "PRIVMSG") 
 				(on-message conn msg)
 				(= (nth (clojure.string/split msg #"\s+") 1) "INVITE")
 				(join-chan conn (nth (clojure.string/split msg #":+" 3) 2))
+				(= (nth (split msg #"\s+") 1) "INVITE")
+				(join-chan conn (nth (split msg #":+" 3) 2))
 				(re-find #"^ERROR :Closing Link:" msg) 
 				(dosync (alter conn merge {:exit true}))
 				(re-find #"^PING" msg)
