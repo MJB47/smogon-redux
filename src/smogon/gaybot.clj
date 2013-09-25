@@ -41,6 +41,7 @@
 	[poke gen]
 	(let [kpoke (keyword poke)
 		  kgen (if (nil? gen) :bw (keyword gen))] ; needs to be changed such that if the argument is not a gen or nil it doesnt crash
+		  kgen (if (or (nil? (re-find (java.util.regex.Pattern/compile gen) (str dex/official-gens))) (nil? gen)) :bw (keyword gen))] 
 	(if (dex/pokemon? kpoke)
 		(str (clojure.string/capitalize poke) ": Typing: " (apply str (dex/in-gen kgen (dex/type-of kpoke))) 
 			(if-not (or (= kgen :rb) (= kgen :gs)) (str " | Abilities: " (apply str (dex/in-gen kgen (dex/abilities-of kpoke)))))
