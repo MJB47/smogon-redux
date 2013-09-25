@@ -10,6 +10,13 @@
 
 (declare conn-handler)
 
+(defn replace-colon [param]
+	(let [sparam (split param #":")]
+		(if-not (= nil (nth sparam 3 nil))
+			(str (capitalize (nth sparam 1)) " / " (capitalize (nth sparam 2)) " / " (capitalize(nth sparam 3)))
+			(if-not (= nil (nth sparam 2 nil))
+				(str (capitalize (nth sparam 1)) " / " (capitalize (nth sparam 2)))
+				(capitalize (nth sparam 1))))))
 
 (defn connect 
 	"connects to the server, returns a bunch of information that needs to be 
@@ -40,11 +47,11 @@
 	"returns a bunch of useful information about a pokemon"
 	[poke gen]
 	(let [kpoke (keyword poke)
-		  kgen (if (nil? gen) :bw (keyword gen))] ; needs to be changed such that if the argument is not a gen or nil it doesnt crash
-		  kgen (if (or (nil? (re-find (java.util.regex.Pattern/compile gen) (str dex/official-gens))) (nil? gen)) :bw (keyword gen))] 
+		  kgen (if (or (nil? gen) (nil? (re-find (java.util.regex.Pattern/compile gen) (str dex/official-gens)))) :bw (keyword gen))] 
 	(if (dex/pokemon? kpoke)
-		(str (clojure.string/capitalize poke) ": Typing: " (apply str (dex/in-gen kgen (dex/type-of kpoke))) 
-			(if-not (or (= kgen :rb) (= kgen :gs)) (str " | Abilities: " (apply str (dex/in-gen kgen (dex/abilities-of kpoke)))))
+		(str (capitalize poke) ": Typing: " (replace-colon (apply str (dex/in-gen kgen (dex/type-of kpoke)))) 
+			(if-not (or (= kgen :rb) (= kgen :gs)) (str " | Abilities: " 
+				(replace-colon (apply str (dex/in-gen kgen (dex/abilities-of kpoke)))))) ; bugged with single ability pokes
 			" | Stats: " 
 			(dex/in-gen kgen (dex/hp-of kpoke)) "/" 
 			(dex/in-gen kgen (dex/atk-of kpoke)) "/" 
@@ -52,7 +59,7 @@
 			(dex/in-gen kgen (dex/spatk-of kpoke)) "/" 
 			(if-not (= kgen :rb) (str (dex/in-gen kgen (dex/spdef-of kpoke)) "/")) 
 			(dex/in-gen kgen (dex/speed-of kpoke)) " | GK/LK Power: "
-			(if-not (= kgen (or :rb :gs)) ((str (dex/power-of-gklk kpoke kgen)) "bp" ))) 
+			(if-not (= kgen (or :rb :gs)) (str (dex/power-of-gklk kpoke kgen) "bp" ))) 
 		(str poke " is not a valid pokemon, did you forget to hyphenate? (-)"))))
 
 (defn url
@@ -81,8 +88,6 @@
 	[poke move]
 	(if (and (dex/pokemon? (keyword poke)) (dex/move? (keyword move)))
 		(if-not (nil? (find (dex/has-move (keyword move)) (keyword poke))) 
-			(str (clojure.string/capitalize poke) " DOES learn the move: " (clojure.string/capitalize move)) 
-			(str (clojure.string/capitalize poke) " DOES NOT learn the move: " (clojure.string/capitalize move)))
 			(str (capitalize poke) " DOES learn the move: " (capitalize move)) 
 			(str (capitalize poke) " DOES NOT learn the move: " (capitalize move)))
 		(str "Not a valid pokemon or move (or both!). Did you forget to hypenate? (-)")))
@@ -90,9 +95,6 @@
 ; need to return: Channel, Sender, Login, Hostname, Message
 (defn on-message 
   [conn msg]
-  (let [chan (nth (clojure.string/split msg #"\s+") 2)
-				privmsg (nth (clojure.string/split msg #":+" 3) 2 nil)
-				smsg (clojure.string/split privmsg #"\s")]
   (let [chan (nth (split msg #"\s+") 2)
 				privmsg (nth (split msg #":+" 3) 2 nil)
 				smsg (split privmsg #"\s")]
@@ -119,15 +121,10 @@
 		(let [msg (.readLine (:in @conn))]
 			;(println msg) ; use this when you want to see what the server messages and whatnot. mostly for debugging
 			(cond 
-				(= (nth (clojure.string/split msg #"\s+") 1) "001")
-				(join-chan conn "#penis,#qwert")
-				(= (nth (clojure.string/split msg #"\s+") 1) "PRIVMSG") 
 				(= (nth (split msg #"\s+") 1) "001")
 				(join-chan conn "#qwert")
 				(= (nth (split msg #"\s+") 1) "PRIVMSG") 
 				(on-message conn msg)
-				(= (nth (clojure.string/split msg #"\s+") 1) "INVITE")
-				(join-chan conn (nth (clojure.string/split msg #":+" 3) 2))
 				(= (nth (split msg #"\s+") 1) "INVITE")
 				(join-chan conn (nth (split msg #":+" 3) 2))
 				(re-find #"^ERROR :Closing Link:" msg) 
