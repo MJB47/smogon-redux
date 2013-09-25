@@ -165,6 +165,12 @@
 (defn speed-of [p]
   (util/group-keys (l/run* [g q] (pokemon-speed-r g p q))))
 
+(defn weight-of [p]
+  (util/group-keys (l/run* [g q] (pokemon-weight-r g p q))))
+
+(defn height-of [p]
+  (util/group-keys (l/run* [g q] (pokemon-height-r g p q))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Evolutions
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
