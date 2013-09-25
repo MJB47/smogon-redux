@@ -16,9 +16,9 @@
 	passed around a bunch."
 	[server]
 	(let [socket (Socket. (:name server) (:port server))
-		in (BufferedReader. (InputStreamReader. (.getInputStream socket)))
-		out (PrintWriter. (.getOutputStream socket))
-		conn (ref {:in in :out out})]
+				in (BufferedReader. (InputStreamReader. (.getInputStream socket)))
+				out (PrintWriter. (.getOutputStream socket))
+				conn (ref {:in in :out out})]
 	(doto (Thread. #(conn-handler conn)) (.start))
 	conn))
 
@@ -35,24 +35,45 @@
 	[conn dest msg]
 	(write conn (str "PRIVMSG " dest " :" msg)))
 
-; (defn gen-filter
-; 	[func gen]
-; 	(if (nil? gen)
-; 		(map first (filter #(contains? (second %) :bw) (func)))
-; 		(map first (filter #(contains? (second %) (keyword gen)) (func)))))
 
 (defn data
 	"returns a bunch of useful information about a pokemon"
 	[poke gen]
 	(let [kpoke (keyword poke)
-				kgen (if (nil? gen) :bw (keyword gen))]
+		  kgen (if (nil? gen) :bw (keyword gen))] ; needs to be changed such that if the argument is not a gen or nil it doesnt crash
 	(if (dex/pokemon? kpoke)
-		(str (clojure.string/capitalize poke) ": Typing: " (dex/in-gen kgen (dex/type-of kpoke)) " | Abilities: " 
-			(dex/in-gen kgen (dex/abilities-of kpoke)) " | Stats: " (dex/in-gen kgen (dex/hp-of kpoke)) "/" 
-			(dex/in-gen kgen (dex/atk-of kpoke)) "/" (dex/in-gen kgen (dex/def-of kpoke)) "/" 
-			(dex/in-gen kgen (dex/spatk-of kpoke)) "/" (dex/in-gen kgen (dex/spdef-of kpoke)) "/" 
-			(dex/in-gen kgen (dex/speed-of kpoke))) 
+		(str (clojure.string/capitalize poke) ": Typing: " (apply str (dex/in-gen kgen (dex/type-of kpoke))) 
+			(if-not (or (= kgen :rb) (= kgen :gs)) (str " | Abilities: " (apply str (dex/in-gen kgen (dex/abilities-of kpoke)))))
+			" | Stats: " 
+			(dex/in-gen kgen (dex/hp-of kpoke)) "/" 
+			(dex/in-gen kgen (dex/atk-of kpoke)) "/" 
+			(dex/in-gen kgen (dex/def-of kpoke)) "/" 
+			(dex/in-gen kgen (dex/spatk-of kpoke)) "/" 
+			(if-not (= kgen :rb) (str (dex/in-gen kgen (dex/spdef-of kpoke)) "/")) 
+			(dex/in-gen kgen (dex/speed-of kpoke)) " | GK/LK Power: "
+			(if-not (= kgen (or :rb :gs)) ((str (dex/power-of-gklk kpoke kgen)) "bp" ))) 
 		(str poke " is not a valid pokemon, did you forget to hyphenate? (-)"))))
+
+(defn url
+	"returns the URL for the pokemon with an optinal gen, default is bw"
+	[poke gen]
+	(let [agen (if (nil? gen) "bw" gen)]
+	(str "http://www.smogon.com/" agen "/pokemon/" poke)))
+
+(defn help
+	[arg]
+	(if (nil? arg) 
+		(str "Smogdex commands are: ?data, ?learn and ?analysis. Made by MJB, feel free to pm if there are any problems.
+			use /help command for more information on how to use the given command.")
+		(cond 
+			(= "data" arg)
+			(str "Takes a pokemon and optionally a gen as an argument, returns typing, abilities and stats of the pokemon.
+				Spaces are replaced by hyphens")
+			(= "learn" arg)
+			(str "Takes a pokemon followed by a move as an argument, returns whether the pokemon learns the move or not.
+				Spaces are replaced with hyphens")
+			(= "analysis" arg)
+			(str "Takes a pokemon and optionally a gen as an argument, returns the URL to the smogon analysis."))))
 
 (defn learn 
 	"tests whether a pokemon can learn a move or not"
@@ -67,15 +88,19 @@
 (defn on-message 
   [conn msg]
   (let [chan (nth (clojure.string/split msg #"\s+") 2)
-		pmsg (nth (clojure.string/split msg #":+" 3) 2 nil)
-		smsg (clojure.string/split pmsg #"\s")]
+				privmsg (nth (clojure.string/split msg #":+" 3) 2 nil)
+				smsg (clojure.string/split privmsg #"\s")]
 	(cond 
-		(= "?hello" pmsg)
+		(= "?hello" privmsg)
 		(message conn chan "sup")
 		(= "?data" (nth smsg 0 nil))
 		(message conn chan (data (nth smsg 1 nil) (nth smsg 2 nil)))
 		(= "?learn" (nth smsg 0 nil))
-		(message conn chan (learn (nth smsg 1 nil) (nth smsg 2 nil))))))
+		(message conn chan (learn (nth smsg 1 nil) (nth smsg 2 nil)))
+		(= "?analysis" (nth smsg 0 nil))
+		(message conn chan (url (nth smsg 1 nil) (nth smsg 2 nil)))
+		(= "?help" (nth smsg 0 nil))
+		(message conn chan (help (nth smsg 1 nil))))))
 
 ; can join multiple channels with the syntax "#showdown,#trivia"
 (defn join-chan 
@@ -86,10 +111,10 @@
 	[conn]
 	(while (nil? (:exit @conn))
 		(let [msg (.readLine (:in @conn))]
-			;(println msg) ; use this when you want to see what the bot see's. Debugging
+			;(println msg) ; use this when you want to see what the server messages and whatnot. mostly for debugging
 			(cond 
 				(= (nth (clojure.string/split msg #"\s+") 1) "001")
-				(join-chan conn "#penis")
+				(join-chan conn "#penis,#qwert")
 				(= (nth (clojure.string/split msg #"\s+") 1) "PRIVMSG") 
 				(on-message conn msg)
 				(= (nth (clojure.string/split msg #"\s+") 1) "INVITE")
